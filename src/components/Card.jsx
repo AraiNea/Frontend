@@ -1,6 +1,8 @@
+// CatalogGrid.jsx
 import React from "react";
 
-const Card = ({ picture, title, subtitle, price, onAdd }) => {
+/** การ์ดสินค้า */
+const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
     const Img =
         typeof picture === "string" ? (
             <img
@@ -19,38 +21,27 @@ const Card = ({ picture, title, subtitle, price, onAdd }) => {
         );
 
     return (
-        <div className="col-md-3 mb-4 col-6">
+        <div className="col-12 col-sm-6 col-md-3 mb-4">
             <div
                 className="card h-100 border-0 shadow-sm position-relative"
                 style={{
-                    borderRadius: "12px",
-                    boxShadow:
-                        "0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08)",
-                    transition: "transform .2s ease",
+                    borderRadius: 12,
+                    boxShadow: "0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08)",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
                 <div className="card-body d-flex flex-column text-center">
                     <div className="w-100 d-flex justify-content-center mb-2">{Img}</div>
 
                     <h5 className="mb-1 fw-semibold">{title}</h5>
-                    <p className="text-muted small mb-5">{subtitle}</p>
+                    {subtitle && <p className="text-muted small mb-5">{subtitle}</p>}
 
                     <div className="mt-auto d-flex align-items-center justify-content-between">
-                        <div className="fw-semibold">฿{price}</div>
-
+                        <div className="fw-semibold">${price}</div>
                         <button
                             type="button"
-                            onClick={onAdd}
                             className="btn btn-danger d-flex align-items-center justify-content-center"
-                            style={{
-                                width: 44,
-                                height: 36,
-                                borderRadius: 10,
-                                boxShadow: "0 2px 6px rgba(220,53,69,.35)",
-                            }}
-                            aria-label="Add to cart"
+                            style={{ width: 44, height: 36, borderRadius: 10 }}
+                            onClick={onAdd}
                             title="Add to cart"
                         >
                             <i className="bi bi-cart" />
@@ -62,4 +53,38 @@ const Card = ({ picture, title, subtitle, price, onAdd }) => {
     );
 };
 
-export default Card;
+/** กริดแสดงหมวดหมู่ + สินค้า 4 ใบ/แถว */
+const CatalogGrid = ({ data }) => {
+    // data format: { results: [ { category:{categoryId, categoryName}, products:[...] }, ... ] }
+    const groups = [...(data?.results ?? [])].sort(
+        (a, b) => a.category.categoryId - b.category.categoryId
+    );
+
+    return (
+        <div className="container px-0">
+            {groups.map((group) => (
+                <section key={group.category.categoryId} className="mb-5">
+                    <h4 className="fw-bold text-uppercase mb-3">
+                        {group.category.categoryName}
+                    </h4>
+
+                    <div className="row">
+                        {group.products?.map((p) => (
+                            <ProductCard
+                                key={p.productId}
+                                // ใช้รูปจาก URL หรือปล่อยว่างก็ได้
+                                picture={p.imageUrl || "/images/placeholder.png"}
+                                title={p.productName}
+                                subtitle={p.productDetail}
+                                price={p.productPrice}
+                                onAdd={() => console.log("add", p.productId)}
+                            />
+                        ))}
+                    </div>
+                </section>
+            ))}
+        </div>
+    );
+};
+
+export default CatalogGrid;
