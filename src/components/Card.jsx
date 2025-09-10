@@ -6,7 +6,7 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
     const Img =
         typeof picture === "string" ? (
             <img
-                src={picture}
+                src={`http://localhost:8080${picture}`}
                 alt={title}
                 className="img-fluid"
                 style={{
@@ -73,7 +73,7 @@ const CatalogGrid = ({ data }) => {
                             <ProductCard
                                 key={p.productId}
                                 // ใช้รูปจาก URL หรือปล่อยว่างก็ได้
-                                picture={p.imageUrl || "/images/placeholder.png"}
+                                picture={p.productImgPath || "/images/placeholder.png"}
                                 title={p.productName}
                                 subtitle={p.productDetail}
                                 price={p.productPrice}

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import config from "../config";
+
 const useMessage = () => {
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const useMessage = () => {
         });
         sessionStorage.clear();
         localStorage.clear();
-        navigate(config.mainRoute + '/');
+        navigate('http://localhost:5173/');
     };
     const showMessageError = (e) => {
         Swal.fire({

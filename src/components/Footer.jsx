@@ -7,10 +7,9 @@ const Footer = () => {
                 backgroundColor: "#e53935", // สีแดงตามรูป
                 color: "white",
                 textAlign: "center",
-                padding: "25px",
+                height: "60px"
             }}
         >
-
         </footer>
     );
 };

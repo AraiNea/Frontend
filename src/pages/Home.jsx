@@ -1,8 +1,12 @@
 // src/pages/Home.jsx
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import CatalogGrid from "../components/Card"; // <- ตัว CatalogGrid ที่เราทำไว้
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import useMessage from "../components/useMessage";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,86 +15,111 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 function Home() {
+    const {
+        showMessagePermission,
+        showMessageError,
+    } = useMessage();
     const navigate = useNavigate();
 
-    const mockData = {
-        results: [
-            {
-                category: { categoryId: 1, categoryName: "PIZZA" },
-                products: [
-                    {
-                        categoryId: 1,
-                        productId: 1,
-                        productName: "Margherita Pizza",
-                        productDetail: "Mozzarella, tomato sauce & basil",
-                        productPrice: 299,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 1,
-                        productId: 2,
-                        productName: "Pepperoni Pizza",
-                        productDetail: "Pepperoni & mozzarella",
-                        productPrice: 349,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 1,
-                        productId: 3,
-                        productName: "Margherita Pizza",
-                        productDetail: "Mozzarella, tomato sauce & basil",
-                        productPrice: 299,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 1,
-                        productId: 4,
-                        productName: "Pepperoni Pizza",
-                        productDetail: "Pepperoni & mozzarella",
-                        productPrice: 349,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 1,
-                        productId: 5,
-                        productName: "Margherita Pizza",
-                        productDetail: "Mozzarella, tomato sauce & basil",
-                        productPrice: 299,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 1,
-                        productId: 6,
-                        productName: "Pepperoni Pizza",
-                        productDetail: "Pepperoni & mozzarella",
-                        productPrice: 349,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                ],
-            },
-            {
-                category: { categoryId: 2, categoryName: "APPETIZER" },
-                products: [
-                    {
-                        categoryId: 2,
-                        productId: 10,
-                        productName: "BBQ chicken wings",
-                        productDetail: "6 pcs.",
-                        productPrice: 149,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                    {
-                        categoryId: 2,
-                        productId: 11,
-                        productName: "Garlic bread",
-                        productDetail: "12 pcs.",
-                        productPrice: 79,
-                        imageUrl: "/assets/img/pizza/Hawaiian.png",
-                    },
-                ],
-            },
-        ],
+    const [data, setData] = useState({ results: [] });
+
+    const fetchData = async () => {
+        try {
+            const res = await axios.get("http://localhost:8080/home/");
+            if (res.data.results != null) {
+                setData(res.data);
+            }
+        } catch (e) {
+            if (e.response?.status === 401) {
+                showMessagePermission();
+            } else {
+                showMessageError(e);
+            }
+        }
     };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // const mockData = {
+    //     results: [
+    //         {
+    //             category: { categoryId: 1, categoryName: "PIZZA" },
+    //             products: [
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 1,
+    //                     productName: "Margherita Pizza",
+    //                     productDetail: "Mozzarella, tomato sauce & basil",
+    //                     productPrice: 299,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 2,
+    //                     productName: "Pepperoni Pizza",
+    //                     productDetail: "Pepperoni & mozzarella",
+    //                     productPrice: 349,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 3,
+    //                     productName: "Margherita Pizza",
+    //                     productDetail: "Mozzarella, tomato sauce & basil",
+    //                     productPrice: 299,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 4,
+    //                     productName: "Pepperoni Pizza",
+    //                     productDetail: "Pepperoni & mozzarella",
+    //                     productPrice: 349,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 5,
+    //                     productName: "Margherita Pizza",
+    //                     productDetail: "Mozzarella, tomato sauce & basil",
+    //                     productPrice: 299,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 1,
+    //                     productId: 6,
+    //                     productName: "Pepperoni Pizza",
+    //                     productDetail: "Pepperoni & mozzarella",
+    //                     productPrice: 349,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             category: { categoryId: 2, categoryName: "APPETIZER" },
+    //             products: [
+    //                 {
+    //                     categoryId: 2,
+    //                     productId: 10,
+    //                     productName: "BBQ chicken wings",
+    //                     productDetail: "6 pcs.",
+    //                     productPrice: 149,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //                 {
+    //                     categoryId: 2,
+    //                     productId: 11,
+    //                     productName: "Garlic bread",
+    //                     productDetail: "12 pcs.",
+    //                     productPrice: 79,
+    //                     imageUrl: "/assets/img/pizza/Hawaiian.png",
+    //                 },
+    //             ],
+    //         },
+    //     ],
+    // };
 
     const heroProducts = [
         {
@@ -141,10 +170,8 @@ function Home() {
                                     >
                                         <img
                                             src={p.image}
-                                            alt={p.name}
                                             style={{ maxWidth: "450px", width: "100%", borderRadius: 8 }}
                                         />
-                                        <h3 className="mt-3 fw-bold">{p.name}</h3>
                                     </div>
                                 </div>
                             </SwiperSlide>
@@ -153,8 +180,14 @@ function Home() {
                 </div>
             </section>
 
+            {/* <div>
+                This is TEST image {productImg}
+            </div>
+            <img src={`http://localhost:8080${productImg}`} alt="Product" /> */}
+
             {/* Body */}
-            <CatalogGrid data={mockData} />
+            <CatalogGrid data={data} />
+            <Footer />
         </>
     );
 }
