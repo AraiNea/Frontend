@@ -10,7 +10,7 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
                 alt={title}
                 className="img-fluid"
                 style={{
-                    maxWidth: 300,
+                    maxWidth: 200,
                     height: 200,
                     objectFit: "contain",
                 }}

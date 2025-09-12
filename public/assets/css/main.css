@@ -12998,3 +12998,91 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
 }
+
+/* NEW */
+
+/* //////////////////////Hero Section/////////////////////// */
+.hero-slide-content {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.hero-slide-content img {
+  border-radius: 12px;
+  max-width: 450px;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 0.4s ease, filter 0.4s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* hover effect */
+.hero-slide-content:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+/* Recommended Badge */
+.hero-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: linear-gradient(45deg, #e53935, #FB8C00);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 25px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 2s infinite;
+}
+
+/* pulse effect for badge */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ซ่อนปุ่ม default ของ Swiper */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none;
+}
+
+/* ปุ่ม custom */
+.custom-swiper-button {
+  color: #fff;
+  background: #e53935;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  transform: translateY(-50%);
+}
+
+.custom-swiper-button:hover {
+  background: linear-gradient(45deg, #e53935, #FB8C00);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ตำแหน่ง */
+.custom-swiper-button-prev {
+  left: 20px;
+}
+.custom-swiper-button-next {
+  right: 20px;
+}
