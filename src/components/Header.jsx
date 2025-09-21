@@ -1,17 +1,30 @@
 // Header.jsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+    const navigate = useNavigate();
+
     const [searchQuery, setSearchQuery] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleSearch = (e) => {
         e.preventDefault();
         console.log("Search:", searchQuery);
     };
 
+    const handleLogin = () => {
+        navigate("/login");
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+        console.log("User logged out");
+    };
+
     return (
         <header id="header" className="header position-relative">
-            {/* 🔹 Top Bar */}
+            {/* Top Bar */}
             <div className="top-bar py-2 d-none d-lg-block bg-light">
                 <div className="container-fluid container-xl">
                     <div className="row align-items-center">
@@ -21,11 +34,11 @@ const Header = () => {
                                 <div className="top-bar-item me-4">
                                     <i className="bi bi-telephone-fill me-2"></i>
                                     <span>Customer Support: </span>
-                                    <span style={{color: "#e53935"}}>0123456789</span>
+                                    <span style={{ color: "#e53935" }}>0123456789</span>
                                 </div>
                                 <div className="top-bar-item">
                                     <i className="bi bi-envelope-fill me-2"></i>
-                                    <a href="mailto:support@example.com" style={{color: "#e53935"}}>
+                                    <a href="mailto:support@example.com" style={{ color: "#e53935" }}>
                                         lnw(Piz)za007@gmail.com
                                     </a>
                                 </div>
@@ -36,7 +49,7 @@ const Header = () => {
                         <div className="col-lg-6">
                             <div className="d-flex justify-content-end">
                                 <div className="top-bar-item me-4">
-                                    <a href="#" style={{color: "#e53935"}}>
+                                    <a href="#" style={{ color: "#e53935" }}>
                                         <i className="bi bi-truck me-2"></i> Track Order
                                     </a>
                                 </div>
@@ -52,8 +65,8 @@ const Header = () => {
                     <div className="d-flex py-3 align-items-center justify-content-between">
                         {/* Logo */}
                         <a href="/" className="logo d-flex align-items-center">
-                            <h1 className="sitename" style={{color: "#e53935"}}>
-                                JomHut <span style={{color: "#FB8C00"}}>lnw(Piz)za007</span>
+                            <h1 className="sitename" style={{ color: "#e53935" }}>
+                                JomHut <span style={{ color: "#FB8C00" }}>lnw(Piz)za007</span>
                             </h1>
                         </a>
 
@@ -83,11 +96,33 @@ const Header = () => {
                             <div className="dropdown">
                                 <button className="header-action-btn" data-bs-toggle="dropdown">
                                     <i className="bi bi-person"></i>
-                                    <span className="d-none d-md-inline-block">Account</span>
+                                    <span className="d-none d-md-inline-block">
+                                        {isLoggedIn ? "Account" : "Guest"}
+                                    </span>
                                 </button>
                                 <ul className="dropdown-menu">
-                                    <li><a className="dropdown-item" href="#">Profile</a></li>
-                                    <li><a className="dropdown-item" href="#">Logout</a></li>
+                                    {isLoggedIn ? (
+                                        <>
+                                            <li>
+                                                <a className="dropdown-item" href="#">
+                                                    Profile
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button className="dropdown-item" onClick={handleLogout}>
+                                                    Logout
+                                                </button>
+                                            </li>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <li>
+                                                <button className="dropdown-item" onClick={handleLogin}>
+                                                    Log In
+                                                </button>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
                             </div>
                         </div>
@@ -100,7 +135,7 @@ const Header = () => {
                 <div className="container-fluid container-xl">
                     <nav className="navmenu">
                         <ul className="d-flex gap-4 list-unstyled mb-0">
-                            <li><a href="/" className="active" style={{color: "#e53935"}}>Home</a></li>
+                            <li><a href="/" className="active" style={{ color: "#e53935" }}>Home</a></li>
                             <li><a href="#">Category</a></li>
                             <li><a href="#">Search</a></li>
                         </ul>

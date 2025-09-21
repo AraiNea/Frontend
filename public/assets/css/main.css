@@ -13086,3 +13086,19 @@ section,
 .custom-swiper-button-next {
   right: 20px;
 }
+
+/* จัดการตำแหน่งเนื้อหา */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* ✅ สูงเต็มจอ */
+}
+
+.main-content {
+  flex: 1; /* ✅ ดัน Footer ลงล่าง */
+}

@@ -1,8 +1,7 @@
-// src/pages/Home.jsx
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import CatalogGrid from "../components/Card"; // <- ตัว CatalogGrid ที่เราทำไว้
+import CatalogGrid from "../components/Card";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
@@ -70,7 +69,11 @@ function Home() {
                             heroData.map((p) => (
                                 <SwiperSlide key={p.recommendedId}>
                                     <div className="d-flex justify-content-center">
-                                        <div className="hero-slide-content text-center">
+                                        <div 
+                                            className="hero-slide-content text-center"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => navigate(`/product/${p.recommendedId}`)}
+                                        >
                                             {/* Badge */}
                                             <span className="hero-badge">Recommended!!</span>
 
@@ -95,7 +98,7 @@ function Home() {
             </section>
 
             {/* Body */}
-            <CatalogGrid data={data} />
+            <CatalogGrid data={data} onProductClick={(id) => navigate(`/product/${id}`)} />
             <Footer />
         </>
     );

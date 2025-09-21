@@ -2,7 +2,7 @@
 import React from "react";
 
 /** การ์ดสินค้า */
-const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
+const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
     const Img =
         typeof picture === "string" ? (
             <img
@@ -26,7 +26,9 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
                 style={{
                     borderRadius: 12,
                     boxShadow: "0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08)",
+                    cursor: "pointer",
                 }}
+                onClick={onClick}
             >
                 <div className="card-body d-flex flex-column text-center">
                     <div className="w-100 d-flex justify-content-center mb-2">{Img}</div>
@@ -40,7 +42,10 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
                             type="button"
                             className="btn btn-danger d-flex align-items-center justify-content-center"
                             style={{ width: 44, height: 36, borderRadius: 10 }}
-                            onClick={onAdd}
+                            onClick={(e) => {
+                                e.stopPropagation(); //กันไม่ให้ trigger onClick ของการ์ด
+                                onAdd();
+                            }}
                             title="Add to cart"
                         >
                             <i className="bi bi-cart" />
@@ -53,7 +58,7 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd }) => {
 };
 
 /** กริดแสดงหมวดหมู่ + สินค้า 4 ใบ/แถว */
-const CatalogGrid = ({ data }) => {
+const CatalogGrid = ({ data, onProductClick }) => {
     // data format: { results: [ { category:{categoryId, categoryName}, products:[...] }, ... ] }
     const groups = [...(data?.results ?? [])].sort(
         (a, b) => a.category.categoryId - b.category.categoryId
@@ -77,6 +82,7 @@ const CatalogGrid = ({ data }) => {
                                 subtitle={p.productDetail}
                                 price={p.productPrice}
                                 onAdd={() => console.log("add", p.productId)}
+                                onClick={() => onProductClick(p.productId)} //ส่ง productId
                             />
                         ))}
                     </div>
