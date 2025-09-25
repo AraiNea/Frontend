@@ -1,6 +1,6 @@
 // Header.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -135,8 +135,28 @@ const Header = () => {
                 <div className="container-fluid container-xl">
                     <nav className="navmenu">
                         <ul className="d-flex gap-4 list-unstyled mb-0">
-                            <li><a href="/" className="active" style={{ color: "#e53935" }}>Home</a></li>
-                            <li><a href="#">Category</a></li>
+                            <li>
+                                <NavLink
+                                    to="/" // เส้นทางที่ต้องการให้ลิงก์ไป
+                                    className="nav-link"
+                                    style={({ isActive }) => ({
+                                        color: isActive ? "#e53935" : "#000", // เปลี่ยนสีเมื่อเป็น active
+                                    })}
+                                >
+                                    Home
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/category"
+                                    className="nav-link"
+                                    style={({ isActive }) => ({
+                                        color: isActive ? "#e53935" : "#000",
+                                    })}
+                                >
+                                    Category
+                                </NavLink>
+                            </li>
                             <li><a href="#">Search</a></li>
                         </ul>
                     </nav>

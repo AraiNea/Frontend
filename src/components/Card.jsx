@@ -1,6 +1,3 @@
-// CatalogGrid.jsx
-import React from "react";
-
 /** การ์ดสินค้า */
 const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
     const Img =
