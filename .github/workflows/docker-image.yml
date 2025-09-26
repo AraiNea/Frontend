@@ -7,22 +7,20 @@ on:
     branches: [ "main" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
-
-    - name: Login DockerHub
-      run: docker login -u cxgdn -p ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Push docker image
+    - name: login
+      run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
+    - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
-
     - name: Run container
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
+      # เพิ่มมา
 
     - name: Wait for container
       run: npx wait-on http://localhost:3000
