@@ -1,7 +1,7 @@
 describe('Navbar navigation', () => {
     it('clicks the 3rd nav-link', () => {
       
-      cy.visit('http://localhost:5173/')
+      cy.visit('http://localhost:3000/')
   
       
       cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
