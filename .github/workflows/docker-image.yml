@@ -7,31 +7,28 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
-    - name: login
-      run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
-    - name: push docker
+
+    - name: Login DockerHub
+      run: docker login -u cxgdn -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push docker image
       run: docker push cxgdn/arainea-frontend:latest
+
     - name: Run container
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
 
-    # - name: Setup Node.js
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: 18
-
-    # - name: Install dependencies
-    #   run: npm ci
+    - name: Wait for container
+      run: npx wait-on http://localhost:3000
 
     - name: Run Cypress tests
       uses: cypress-io/github-action@v6
       with:
-        start: echo "already started via docker"
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
