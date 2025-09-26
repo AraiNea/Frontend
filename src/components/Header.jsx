@@ -10,7 +10,10 @@ const Header = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log("Search:", searchQuery);
+        if (searchQuery.trim() !== "") {
+            // ไปหน้า /search พร้อม query parameter
+            navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+        }
     };
 
     const handleLogin = () => {
@@ -71,7 +74,21 @@ const Header = () => {
                         </a>
 
                         {/* Search */}
-                        <form className="search-form desktop-search-form" onSubmit={handleSearch}>
+                        {/* <form className="search-form desktop-search-form" onSubmit={handleSearch}>
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search for products..."
+                                />
+                                <button className="btn btn-danger search-btn" type="submit">
+                                    <i className="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form> */}
+                        <form className="search-form flex-grow-1 me-3" onSubmit={handleSearch} style={{ minWidth: "200px" }}>
                             <div className="input-group">
                                 <input
                                     type="text"
@@ -157,7 +174,16 @@ const Header = () => {
                                     Category
                                 </NavLink>
                             </li>
-                            <li><a href="#">Search</a></li>
+                            <li>
+                                <NavLink to="/search"
+                                className="nav-link"
+                                style={({ isActive }) => ({
+                                        color: isActive ? "#e53935" : "#000",
+                                    })}
+                                    >
+                                    Search
+                                </NavLink>
+                            </li>
                         </ul>
                     </nav>
                 </div>
