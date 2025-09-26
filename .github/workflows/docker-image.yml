@@ -18,3 +18,20 @@ jobs:
       run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
     - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
+    - name: Run container
+      run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
+
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: 18
+
+    # - name: Install dependencies
+    #   run: npm ci
+
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v6
+      with:
+        start: echo "already started via docker"
+        wait-on: 'http://localhost:3000'
+        wait-on-timeout: 120
