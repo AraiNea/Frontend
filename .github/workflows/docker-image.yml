@@ -44,7 +44,7 @@ jobs:
           --env APP_JWT_EXPIRES_DAYS=30 \
           pattaratos/arainea-backend:latest
     - name: Run container for frontend
-      run: docker run -d -p 5173:5173 --name frontend cxgdn/arainea-frontend:latest
+      run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -54,7 +54,7 @@ jobs:
     - name: Run Cypress tests
       uses: cypress-io/github-action@v6
       with:
-        wait-on: "http://localhost:5173"  
+        wait-on: "http://localhost:3000"  
         wait-on-timeout: 120      
     - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
