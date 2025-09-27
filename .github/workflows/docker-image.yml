@@ -56,7 +56,6 @@ jobs:
       with:
         wait-on: "http://localhost:3000"
         wait-on-timeout: 120
-        command: npx cypress run
     - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
   
