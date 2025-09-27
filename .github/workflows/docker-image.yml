@@ -41,6 +41,7 @@ jobs:
     - name: Run docker for backend
       run: |
         docker run -d --name be \
+          --network host \
           -p 8080:8080 \
           --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
           --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
