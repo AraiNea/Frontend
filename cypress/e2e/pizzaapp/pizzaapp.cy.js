@@ -19,4 +19,3 @@ describe('Navbar navigation', () => {
 
     })
   })
-  
