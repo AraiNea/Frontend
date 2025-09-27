@@ -9,10 +9,10 @@ describe('Navbar navigation', () => {
         .click({force: true})
       cy.get('.form-control').type('Water', { force: true })
       cy.get('.py-3').click({ force: true })
-      cy.get(':nth-child(1) > .nav-link').click()
+      cy.get(':nth-child(1) > .nav-link').click({force: true})
       cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
         .should('be.visible')  
-        .click()
+        .click({force: true})
       cy.get('.form-control').type('BBQ', { force: true })
 
 
