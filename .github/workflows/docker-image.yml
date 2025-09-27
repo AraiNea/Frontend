@@ -54,8 +54,9 @@ jobs:
     - name: Run Cypress tests
       uses: cypress-io/github-action@v6
       with:
-        wait-on: "http://localhost:3000"
-        wait-on-timeout: 120
+        start: npm run dev 
+        wait-on: "http://localhost:5173"  
+        wait-on-timeout: 120      
     - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
   
