@@ -48,16 +48,15 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
     - name: install dep
       run: npm ci
     - name: Run Cypress tests
       uses: cypress-io/github-action@v6
       with:
-        start: ""
         wait-on: "http://localhost:3000"
         wait-on-timeout: 120
-        command: npm run cypress:run
+        command: npx cypress run
     - name: push docker
       run: docker push cxgdn/arainea-frontend:latest
   
