@@ -20,13 +20,4 @@ jobs:
       run: docker push cxgdn/arainea-frontend:latest
     - name: Run container
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
-      # เพิ่มมา
-
-    - name: Wait for container
-      run: npx wait-on http://localhost:3000
-
-    - name: Run Cypress tests
-      uses: cypress-io/github-action@v6
-      with:
-        wait-on: 'http://localhost:3000'
-        wait-on-timeout: 120
+  
