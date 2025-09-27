@@ -42,7 +42,6 @@ jobs:
       run: |
         docker run -d --name be \
           --network host \
-          -p 8080:8080 \
           --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
           --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
           --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
