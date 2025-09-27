@@ -45,6 +45,9 @@ jobs:
           pattaratos/arainea-backend:latest
     - name: Run container for frontend
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
+    - name: Wait for backend
+      run: curl --fail http://localhost:8080/home
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
