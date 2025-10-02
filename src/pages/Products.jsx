@@ -16,11 +16,14 @@ function Products() {
     const fetchData = async () => {
         try {
             const res = await axios.get(
-                `http://localhost:8080/product/list?productid=${id}`
+                `http://localhost:8080/product/list?productId=${id}`
             );
-
-            if (res.data && res.data.length > 0) {
-                const found = res.data.find(p => String(p.productId) === String(id));
+            console.log("already data");
+            console.log(res.data);
+            if (res.data && res.data.products.length > 0) {
+                console.log("have data");
+                const found = res.data.products.find(p => String(p.productId) === String(id));
+                console.log(found);
                 if (found) {
                     setProduct(found);
                 }
