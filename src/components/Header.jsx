@@ -65,7 +65,7 @@ const Header = () => {
             {/* 🔹 Main Header */}
             <div className="main-header">
                 <div className="container-fluid container-xl">
-                    <div className="d-flex py-3 align-items-center justify-content-between">
+                    <div className="d-flex flex-wrap py-3 align-items-center">
                         {/* Logo */}
                         <a href="/" className="logo d-flex align-items-center">
                             <h1 className="sitename" style={{ color: "#e53935" }}>
@@ -74,7 +74,10 @@ const Header = () => {
                         </a>
 
                         {/* Search */}
-                        {/* <form className="search-form desktop-search-form" onSubmit={handleSearch}>
+                        <form
+                            className="search-form desktop-search-form"
+                            onSubmit={handleSearch}
+                        >
                             <div className="input-group">
                                 <input
                                     type="text"
@@ -83,21 +86,7 @@ const Header = () => {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search for products..."
                                 />
-                                <button className="btn btn-danger search-btn" type="submit">
-                                    <i className="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </form> */}
-                        <form className="search-form flex-grow-1 me-3" onSubmit={handleSearch} style={{ minWidth: "200px" }}>
-                            <div className="input-group">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search for products..."
-                                />
-                                <button className="btn btn-danger search-btn" type="submit">
+                                <button className="btn search-btn" type="submit">
                                     <i className="bi bi-search"></i>
                                 </button>
                             </div>
@@ -147,6 +136,27 @@ const Header = () => {
                 </div>
             </div>
 
+            {/* ✅ Mobile Search (แสดงเฉพาะจอเล็ก) */}
+            <div id="mobileSearch" className="d-lg-none">
+                <div className="container-fluid container-xl">
+                    <form className="search-form" onSubmit={handleSearch}>
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search..."
+                            />
+                            <button className="btn search-btn" type="submit">
+                                <i className="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
             {/* 🔹 Nav */}
             <div className="header-nav border-top">
                 <div className="container-fluid container-xl">
@@ -176,11 +186,11 @@ const Header = () => {
                             </li>
                             <li>
                                 <NavLink to="/search"
-                                className="nav-link"
-                                style={({ isActive }) => ({
+                                    className="nav-link"
+                                    style={({ isActive }) => ({
                                         color: isActive ? "#e53935" : "#000",
                                     })}
-                                    >
+                                >
                                     Search
                                 </NavLink>
                             </li>

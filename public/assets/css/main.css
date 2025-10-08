@@ -647,885 +647,113 @@ h6 {
 # Navigation Menu
 --------------------------------------------------------------*/
 /* Desktop Navigation */
-@media (min-width: 1200px) {
-  .navmenu {
-    padding: 0;
-  }
+/* ==========================
+  🔹 Header Navigation Fix
+   ========================== */
+.header .header-nav {
+  background-color: #fff;
+  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  
+}
 
-  .navmenu ul {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    list-style: none;
-    align-items: center;
-  }
+.header .navmenu {
+  text-align: center;
+  padding: 1rem;
+}
 
-  .navmenu li {
-    position: relative;
-  }
+.header .navmenu ul {
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
 
-  .navmenu>ul>li {
-    white-space: nowrap;
-    padding: 15px 14px;
-  }
+.header .navmenu li {
+  padding-right: 2rem;
+}
 
-  .navmenu>ul>li:last-child {
-    padding-right: 0;
-  }
+.header .navmenu .nav-link {
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  color: var(--default-color);
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
 
-  .navmenu a,
-  .navmenu a:focus {
-    color: var(--nav-color);
-    font-size: 15px;
-    padding: 0 2px;
-    font-family: var(--nav-font);
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-    transition: 0.3s;
-    position: relative;
-  }
+.header .navmenu .nav-link:hover {
+  color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+}
 
-  .navmenu a i,
-  .navmenu a:focus i {
-    font-size: 12px;
-    line-height: 0;
-    margin-left: 5px;
-    transition: 0.3s;
-  }
+.header .navmenu .nav-link.active {
+  color: var(--accent-color) !important;
+  font-weight: 600;
+}
 
-  .navmenu>ul>li>a:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -6px;
-    left: 0;
-    background-color: var(--accent-color);
-    visibility: hidden;
-    width: 0px;
-    transition: all 0.3s ease-in-out 0s;
+/* 🔹 สำหรับมือถือให้เนื้อหากระชับขึ้น */
+@media (max-width: 768px) {
+  .header .header-nav {
+    padding: 0.3rem 0;
   }
-
-  .navmenu a:hover:before,
-  .navmenu li:hover>a:before,
-  .navmenu .active:before {
-    visibility: visible;
-    width: 100%;
-  }
-
-  .navmenu li:hover>a,
-  .navmenu .active,
-  .navmenu .active:focus {
-    color: var(--nav-hover-color);
-  }
-
-  .navmenu .dropdown ul {
-    margin: 0;
-    padding: 10px 0;
-    background: var(--nav-dropdown-background-color);
-    display: block;
-    position: absolute;
-    visibility: hidden;
-    left: 14px;
-    top: 130%;
-    opacity: 0;
-    transition: 0.3s;
-    border-radius: 4px;
-    z-index: 99;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .navmenu .dropdown ul li {
-    min-width: 200px;
-  }
-
-  .navmenu .dropdown ul a {
-    padding: 10px 20px;
-    font-size: 15px;
-    text-transform: none;
-    color: var(--nav-dropdown-color);
-  }
-
-  .navmenu .dropdown ul a i {
-    font-size: 12px;
-  }
-
-  .navmenu .dropdown ul a:hover,
-  .navmenu .dropdown ul .active:hover,
-  .navmenu .dropdown ul li:hover>a {
-    color: var(--nav-dropdown-hover-color);
-  }
-
-  .navmenu .dropdown:hover>ul {
-    opacity: 1;
-    top: 100%;
-    visibility: visible;
-  }
-
-  .navmenu .dropdown .dropdown ul {
-    top: 0;
-    left: -90%;
-    visibility: hidden;
-  }
-
-  .navmenu .dropdown .dropdown:hover>ul {
-    opacity: 1;
-    top: 0;
-    left: -100%;
-    visibility: visible;
+  .header .navmenu .nav-link {
+    font-size: 14px;
+    padding: 0.4rem 0.6rem;
   }
 }
 
-/* Mobile Navigation */
-@media (max-width: 1199px) {
-  .mobile-nav-toggle {
-    color: var(--nav-color);
-    font-size: 28px;
-    line-height: 0;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-
-  .navmenu {
-    padding: 0;
-    z-index: 9997;
-  }
-
-  .navmenu ul {
-    display: none;
-    list-style: none;
-    position: absolute;
-    inset: 60px 20px 20px 20px;
-    padding: 10px 0;
-    margin: 0;
-    border-radius: 6px;
-    background-color: var(--nav-mobile-background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-    box-shadow: none;
-    overflow-y: auto;
-    transition: 0.3s;
-    z-index: 9998;
-  }
-
-  .navmenu a,
-  .navmenu a:focus {
-    color: var(--nav-dropdown-color);
-    padding: 10px 20px;
-    font-family: var(--nav-font);
-    font-size: 17px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-    transition: 0.3s;
-  }
-
-  .navmenu a i,
-  .navmenu a:focus i {
-    font-size: 12px;
-    line-height: 0;
-    margin-left: 5px;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: 0.3s;
-    background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
-  }
-
-  .navmenu a i:hover,
-  .navmenu a:focus i:hover {
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
-  }
-
-  .navmenu a:hover,
-  .navmenu .active,
-  .navmenu .active:focus {
-    color: var(--nav-dropdown-hover-color);
-  }
-
-  .navmenu .active i,
-  .navmenu .active:focus i {
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
-    transform: rotate(180deg);
-  }
-
-  .navmenu .dropdown ul {
-    position: static;
-    display: none;
-    z-index: 99;
-    padding: 10px 0;
-    margin: 10px 20px;
-    background-color: var(--nav-dropdown-background-color);
-    transition: all 0.5s ease-in-out;
-  }
-
-  .navmenu .dropdown ul ul {
-    background-color: rgba(33, 37, 41, 0.1);
-  }
-
-  .navmenu .dropdown>.dropdown-active {
-    display: block;
-    background-color: rgba(33, 37, 41, 0.03);
-  }
-
-  .mobile-nav-active {
-    overflow: hidden;
-  }
-
-  .mobile-nav-active .mobile-nav-toggle {
-    color: #fff;
-    position: absolute;
-    font-size: 32px;
-    top: 15px;
-    right: 15px;
-    margin-right: 0;
-    z-index: 9999;
-  }
-
-  .mobile-nav-active .navmenu {
-    position: fixed;
-    overflow: hidden;
-    inset: 0;
-    background: rgba(33, 37, 41, 0.8);
-    transition: 0.3s;
-  }
-
-  .mobile-nav-active .navmenu>ul {
-    display: block;
-  }
+.header .header-nav {
+  background-color: var(--background-color);
+  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  padding: 0;
 }
 
-/* Products Mega Menu 1 - Desktop */
-@media (min-width: 1200px) {
-  .navmenu .products-megamenu-1 {
-    position: static;
-    /*  Hide Desktop Mega Menu 1 in Desktop */
-    /* Bootstrap Tabs Navigation */
-    /* Tab Content */
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu {
-    display: none;
-  }
-
-  .navmenu .products-megamenu-1 .desktop-megamenu,
-  .navmenu .products-megamenu-1 .active,
-  .navmenu .products-megamenu-1 .active:focus {
-    background-color: var(--nav-dropdown-background-color);
-  }
-
-  .navmenu .products-megamenu-1 .desktop-megamenu {
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 130%;
-    left: 0;
-    right: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: 0.3s;
-    border-radius: 6px;
-    z-index: 99;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-1:hover>.desktop-megamenu {
-    opacity: 1;
-    top: 100%;
-    visibility: visible;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs {
-    margin-bottom: 15px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs .nav-tabs {
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs .nav-tabs .nav-item {
-    margin-bottom: 0;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs .nav-tabs .nav-link {
-    border: none;
-    padding: 10px 20px;
-    color: var(--nav-dropdown-color);
-    font-weight: 500;
-    font-size: 15px;
-    transition: 0.3s;
-    background-color: transparent;
-    border-bottom: 2px solid transparent;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs .nav-tabs .nav-link:hover {
-    color: var(--nav-dropdown-hover-color);
-    border-color: transparent;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-tabs .nav-tabs .nav-link.active {
-    color: var(--accent-color);
-    background-color: transparent;
-    border-bottom: 2px solid var(--accent-color);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 5px;
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    /* Category Grid */
-    /* Product Grid */
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--default-color), transparent 95%);
-    border-radius: 10px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--default-color), transparent 80%);
-    border-radius: 10px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .tab-content {
-    display: none;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .tab-content.active {
-    display: block;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column {
-    background-color: color-mix(in srgb, var(--surface-color), var(--accent-color) 3%);
-    border-radius: 8px;
-    padding: 15px;
-    transition: 0.3s;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column h4 {
-    color: var(--heading-color);
-    font-size: 16px;
-    margin-bottom: 15px;
-    font-weight: 600;
-    padding-bottom: 10px;
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-    position: relative;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column h4:after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background-color: var(--accent-color);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li {
-    margin-bottom: 10px;
-    background-color: none !important;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: start !important;
-    width: 100%;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li:last-child {
-    margin-bottom: 0;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li a {
-    color: var(--nav-dropdown-color);
-    font-size: 14px;
-    transition: 0.3s;
-    padding: 0 0 0 20px;
-    display: block;
-    position: relative;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li a:before {
-    content: "\f285";
-    font-family: "bootstrap-icons";
-    position: absolute;
-    left: 0;
-    top: 2px;
-    font-size: 12px;
-    color: var(--accent-color);
-    opacity: 0.7;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li a:hover {
-    color: var(--nav-dropdown-hover-color);
-    transform: translateX(3px);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column ul li a:hover:before {
-    opacity: 1;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .category-grid .category-column .active {
-    background-color: none;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    padding-top: 10px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card {
-    background-color: var(--surface-color);
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card:hover .product-image img {
-    transform: scale(1.1);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image {
-    height: 160px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: 0.5s;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image .badge-new,
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image .badge-sale {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 3px 8px;
-    font-size: 11px;
-    font-weight: 600;
-    border-radius: 3px;
-    z-index: 1;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image .badge-new {
-    background-color: #28a745;
-    color: white;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-image .badge-sale {
-    background-color: #dc3545;
-    color: white;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info {
-    padding: 15px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info h5 {
-    margin: 0 0 5px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--heading-color);
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info .price {
-    color: var(--accent-color);
-    font-weight: 600;
-    margin-bottom: 10px;
-    font-size: 14px;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info .price .original-price {
-    text-decoration: line-through;
-    color: color-mix(in srgb, var(--default-color), transparent 40%);
-    margin-right: 5px;
-    font-weight: normal;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info .btn-view {
-    display: inline-block;
-    padding: 5px 12px;
-    background-color: color-mix(in srgb, var(--accent-color), transparent 85%);
-    color: var(--accent-color);
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    transition: 0.3s;
-  }
-
-  .navmenu .products-megamenu-1 .megamenu-content .product-grid .product-card .product-info .btn-view:hover {
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
-  }
+.header .navmenu {
+  padding-left: 0;
 }
 
-/* Products Mega Menu 1 - Mobile */
-@media (max-width: 1199px) {
-  .navmenu .products-megamenu-1 {
-    /* Hide Desktop Mega Menu 1 in Mobile */
-  }
-
-  .navmenu .products-megamenu-1 .desktop-megamenu {
-    display: none;
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu {
-    position: static;
-    display: none;
-    z-index: 99;
-    padding: 0;
-    margin: 10px 20px;
-    background-color: var(--nav-dropdown-background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-    box-shadow: none;
-    transition: all 0.5s ease-in-out;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu li {
-    position: relative;
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu li:last-child {
-    border-bottom: none;
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu li a {
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--nav-dropdown-color);
-    font-size: 15px;
-    transition: 0.3s;
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu li a:hover {
-    color: var(--nav-dropdown-hover-color);
-    background-color: color-mix(in srgb, var(--default-color), transparent 97%);
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu li ul {
-    padding: 0;
-  }
-
-  .navmenu .products-megamenu-1 .mobile-megamenu.dropdown-active {
-    display: block;
-  }
+.header .navmenu ul {
+  justify-content: flex-start; /* ✅ ชิดซ้าย */
+  gap: 1.5rem; /* ระยะระหว่างเมนู */
 }
 
-/* Products Mega Menu 2 - Desktop */
-@media (min-width: 1200px) {
-  .navmenu .products-megamenu-2 {
-    position: static;
-    /* Hide Mobile Mega Menu in Desktop */
-    /* Tabs Navigation */
-    /* Tab Content */
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu {
-    display: none;
-  }
-
-  .navmenu .products-megamenu-2 .desktop-megamenu,
-  .navmenu .products-megamenu-2 .active,
-  .navmenu .products-megamenu-2 .active:focus {
-    background-color: var(--nav-dropdown-background-color);
-  }
-
-  .navmenu .products-megamenu-2 .desktop-megamenu {
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 130%;
-    left: 0;
-    right: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: 0.3s;
-    border-radius: 6px;
-    z-index: 99;
-    padding: 10px 0 0 0;
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-2:hover>.desktop-megamenu {
-    opacity: 1;
-    top: 100%;
-    visibility: visible;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs {
-    padding: 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs .nav-tabs {
-    border-bottom: none;
-    display: flex;
-    justify-content: center;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs .nav-tabs .nav-item {
-    margin: 0;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs .nav-tabs .nav-link {
-    border: none;
-    padding: 15px 30px;
-    color: var(--nav-dropdown-color);
-    font-weight: 600;
-    font-size: 14px;
-    transition: 0.3s;
-    background-color: transparent;
-    border-bottom: 2px solid transparent;
-    letter-spacing: 0.5px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs .nav-tabs .nav-link:hover {
-    color: var(--nav-dropdown-hover-color);
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-tabs .nav-tabs .nav-link.active {
-    color: var(--accent-color);
-    background-color: transparent;
-    border-bottom: 2px solid var(--accent-color);
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content {
-    flex: 1;
-    overflow-y: auto;
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    /* Category Layout */
-    /* Categories Section */
-    /* Featured Section */
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--default-color), transparent 95%);
-    border-radius: 10px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--default-color), transparent 80%);
-    border-radius: 10px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .tab-pane {
-    padding: 25px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .category-layout {
-    display: flex;
-    gap: 30px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section {
-    flex: 1;
-    /* Category Headers */
-    /* Category Links */
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-headers {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    margin-bottom: 15px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-headers h4 {
-    color: var(--heading-color);
-    font-size: 16px;
-    font-weight: 600;
-    position: relative;
-    margin: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-links {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-links .link-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-links .link-row a {
-    color: var(--nav-dropdown-color);
-    font-size: 14px;
-    transition: 0.3s;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .categories-section .category-links .link-row a:hover {
-    color: var(--nav-dropdown-hover-color);
-    transform: translateX(3px);
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section {
-    width: 300px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image {
-    position: relative;
-    height: 100%;
-    background-color: #f5f5f5;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.9;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image .featured-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 30px;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image .featured-content h3 {
-    color: var(--heading-color);
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.2;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image .featured-content .btn-shop {
-    display: inline-block;
-    padding: 8px 20px;
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: 0.3s;
-    width: fit-content;
-  }
-
-  .navmenu .products-megamenu-2 .megamenu-content .featured-section .featured-image .featured-content .btn-shop:hover {
-    background-color: color-mix(in srgb, var(--accent-color), black 15%);
-    transform: translateY(-2px);
-  }
+/* ใช้ฟอนต์และสีตาม theme เดิม */
+.header .navmenu a,
+.header .navmenu a:focus {
+  color: var(--nav-color);
+  font-family: var(--nav-font);
+  font-size: 15px;
+  font-weight: 400;
+  position: relative;
+  padding: 14px 0;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
-/* Products Mega Menu 2 - Mobile */
-@media (max-width: 1199px) {
-  .navmenu .products-megamenu-2 {
-    /* Hide Desktop Mega Menu in Mobile */
-  }
+/* เส้นใต้เวลา hover / active */
+.header .navmenu a:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
+}
 
-  .navmenu .products-megamenu-2 .desktop-megamenu {
-    display: none;
-  }
+.header .navmenu a:hover:before,
+.header .navmenu .active:before {
+  width: 100%;
+}
 
-  .navmenu .products-megamenu-2 .mobile-megamenu {
-    position: static;
-    display: none;
-    z-index: 99;
-    padding: 0;
-    margin: 10px 20px;
-    background-color: var(--nav-dropdown-background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-    box-shadow: none;
-    transition: all 0.5s ease-in-out;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu li {
-    position: relative;
-    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu li:last-child {
-    border-bottom: none;
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu li a {
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--nav-dropdown-color);
-    font-size: 15px;
-    transition: 0.3s;
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu li a:hover {
-    color: var(--nav-dropdown-hover-color);
-    background-color: color-mix(in srgb, var(--default-color), transparent 97%);
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu li ul {
-    padding: 0;
-  }
-
-  .navmenu .products-megamenu-2 .mobile-megamenu.dropdown-active {
-    display: block;
-  }
+.header .navmenu a:hover,
+.header .navmenu .active {
+  color: var(--nav-hover-color);
 }
 
 /*--------------------------------------------------------------
