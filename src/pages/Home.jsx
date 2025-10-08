@@ -80,7 +80,7 @@ function Home() {
                                             {/* Image */}
                                             <img
                                                 className="hero-image"
-                                                src={`http://localhost:8080${p.recommendedImg}`}
+                                                src={`http://localhost:8080${p.recommendImgPath}`}
                                                 alt={`Recommended ${p.recommendedId}`}
                                             />
                                         </div>
