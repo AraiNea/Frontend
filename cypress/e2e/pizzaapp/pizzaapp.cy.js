@@ -12,14 +12,14 @@ describe('Navbar navigation', () => {
       
       cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
         .should('be.visible')  
-        .click({force: true})
-      cy.get('.form-control').first().type('Water', { force: true })
+        .click()
+      cy.get('.form-control').first().type('Water')
       cy.get('.py-3').click({ force: true })
-      cy.get(':nth-child(1) > .nav-link').click({force: true})
+      cy.get(':nth-child(1) > .nav-link').click()
       cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
         .should('be.visible')  
-        .click({force: true})
-      cy.get('.form-control').first().type('BBQ', { force: true })
+        .click()
+      cy.get('.form-control').first().type('BBQ')
 
 
 
