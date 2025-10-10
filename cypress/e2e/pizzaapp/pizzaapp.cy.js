@@ -1,6 +1,6 @@
 describe('Navbar navigation', () => {
     it('checks backend is reachable before testing UI', () => {
-      cy.request('http://localhost:8080/home').then((res) => {
+      cy.request('http://localhost:8080/home/').then((res) => {
         expect(res.status).to.eq(200)
       })
     })
@@ -19,7 +19,7 @@ describe('Navbar navigation', () => {
       cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
         .should('be.visible')  
         .click({force: true})
-      cy.get('.form-control').type('BBQ', { force: true })
+      cy.get('.form-control').first().type('BBQ', { force: true })
 
 
 
