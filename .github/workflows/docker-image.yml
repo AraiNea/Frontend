@@ -57,6 +57,9 @@ jobs:
             echo "✅ Found GitHub Actions network: $NET_ID"
           fi
 
+          # ✅ Export NET_ID to environment for next steps
+          echo "NET_ID=$NET_ID" >> $GITHUB_ENV
+
           docker run -d --name be \
             --network=$NET_ID \
             -p 8080:8080 \
@@ -92,7 +95,7 @@ jobs:
             -p 3000:3000 \
             -e VITE_API_URL=${{ env.VITE_API_URL }} \
             cxgdn/arainea-frontend:latest
-
+            
       # แสดง log backend ถ้า fail
       - name: Show backend logs
         if: failure()
