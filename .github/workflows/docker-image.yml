@@ -47,11 +47,16 @@ jobs:
       # 👇 Step นี้คือกุญแจสำคัญ (เชื่อม backend เข้ากับ network ของ postgres)
       - name: Run backend and connect to GitHub Actions service network
         run: |
-          # หาชื่อ network ของ service 'postgres'
-          NET_ID=$(docker network ls --filter name=github_network --format "{{.ID}}")
-          echo "🕸️ Found GitHub Actions network: $NET_ID"
+          echo "🔍 Searching for GitHub Actions network..."
+          NET_ID=$(docker network ls --format '{{.Name}}' | grep github_ || true)
 
-          # รัน backend ใน network เดียวกัน
+          if [ -z "$NET_ID" ]; then
+            echo "⚠️ No GitHub Actions network found. Using default bridge network."
+            NET_ID=bridge
+          else
+            echo "✅ Found GitHub Actions network: $NET_ID"
+          fi
+
           docker run -d --name be \
             --network=$NET_ID \
             -p 8080:8080 \
@@ -81,6 +86,7 @@ jobs:
       # ✅ รัน frontend container
       - name: Run frontend
         run: |
+          echo "🔍 Using same network as backend ($NET_ID)"
           docker run -d --name frontend \
             --network=$NET_ID \
             -p 3000:3000 \
