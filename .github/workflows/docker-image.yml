@@ -33,39 +33,41 @@ jobs:
       VITE_API_URL: http://localhost:8080
 
     steps:
-      # Checkout repo
       - uses: actions/checkout@v4
 
-      # Build frontend Docker image
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
 
-      # Login to Docker Hub
       - name: Login to Docker Hub
         run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
 
-      # Pull backend image from Docker Hub
       - name: Pull backend image
         run: docker pull docker.io/pattaratos/arainea-backend:latest
 
-      # Run backend container (no custom network → connects to postgres service automatically)
-      - name: Run backend
+      # 👇 Step นี้คือกุญแจสำคัญ (เชื่อม backend เข้ากับ network ของ postgres)
+      - name: Run backend and connect to GitHub Actions service network
         run: |
+          # หาชื่อ network ของ service 'postgres'
+          NET_ID=$(docker network ls --filter name=github_network --format "{{.ID}}")
+          echo "🕸️ Found GitHub Actions network: $NET_ID"
+
+          # รัน backend ใน network เดียวกัน
           docker run -d --name be \
+            --network=$NET_ID \
             -p 8080:8080 \
-            --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
-            --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
-            --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
-            --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
-            --env APP_JWT_EXPIRES_DAYS=30 \
+            -e SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
+            -e SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
+            -e SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
+            -e APP_JWT_SECRET=${{ env.JWT_SECRET }} \
+            -e APP_JWT_EXPIRES_DAYS=30 \
             pattaratos/arainea-backend:latest
 
-      # Wait for backend to be ready before continuing
+      # ✅ รอ backend พร้อมก่อน (ใช้ /actuator/health หรือ /home)
       - name: Wait for backend to be ready
         run: |
           echo "⏳ Waiting for backend to start..."
           for i in {1..30}; do
-            if curl -s http://localhost:8080/home >/dev/null; then
+            if curl -s http://localhost:8080/actuator/health >/dev/null; then
               echo "✅ Backend is ready!"
               exit 0
             fi
@@ -76,30 +78,30 @@ jobs:
           docker logs be
           exit 1
 
-      # Run frontend container (same default network)
+      # ✅ รัน frontend container
       - name: Run frontend
         run: |
           docker run -d --name frontend \
+            --network=$NET_ID \
             -p 3000:3000 \
             -e VITE_API_URL=${{ env.VITE_API_URL }} \
             cxgdn/arainea-frontend:latest
 
-      # Show backend logs if any step fails
+      # แสดง log backend ถ้า fail
       - name: Show backend logs
         if: failure()
         run: docker logs be
 
-      # Setup Node for Cypress
+      # ติดตั้ง Cypress
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Install Cypress dependencies
       - name: Install dependencies
         run: npm ci
 
-      # Run Cypress tests after frontend is ready
+      # ✅ Run Cypress tests
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -108,6 +110,6 @@ jobs:
         env:
           VITE_API_URL: http://localhost:8080
 
-      # Push frontend image back to Docker Hub (optional)
+      # Push image (optional)
       - name: Push Docker image
         run: docker push cxgdn/arainea-frontend:latest
