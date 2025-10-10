@@ -7,9 +7,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
+
     services:
       postgres:
         image: postgres:17
@@ -24,47 +24,85 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
     env:
       DB_URL: jdbc:postgresql://localhost:5432/pizza_mock
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       JWT_SECRET: mysupersecuresecretthatatleast32characterslong
-      
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
-    - name: login
-      run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
-    - name: Pull docker Image
-      run: docker pull docker.io/pattaratos/arainea-backend:latest
-    - name: Run docker for backend
-      run: |
-        docker run -d --name be \
-          -p 8080:8080 \
-          --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
-          --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
-          --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
-          --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
-          --env APP_JWT_EXPIRES_DAYS=30 \
-          pattaratos/arainea-backend:latest
 
-    - name: Run container for frontend
-      run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
-    - name: Show backend logs
-      if: failure()
-      run: docker logs be
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-    - name: install dep
-      run: npm ci
-    - name: Run Cypress tests
-      uses: cypress-io/github-action@v6
-      with:
-        wait-on: "http://localhost:3000"  
-        wait-on-timeout: 120      
-    - name: push docker
-      run: docker push cxgdn/arainea-frontend:latest
-  
+    steps:
+      # Checkout source code
+      - uses: actions/checkout@v4
+
+      # Build frontend image
+      - name: Build frontend Docker image
+        run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
+
+      # Login to Docker Hub
+      - name: Login to Docker Hub
+        run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
+
+      # Pull backend image
+      - name: Pull backend Docker image
+        run: docker pull docker.io/pattaratos/arainea-backend:latest
+
+      # Run backend container
+      - name: Run backend container
+        run: |
+          docker run -d --name be \
+            -p 8080:8080 \
+            --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
+            --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
+            --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
+            --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
+            --env APP_JWT_EXPIRES_DAYS=30 \
+            pattaratos/arainea-backend:latest
+
+      # Wait until backend responds
+      - name: Wait for backend to be ready
+        run: |
+          echo "⏳ Waiting for backend to respond on port 8080..."
+          for i in {1..20}; do
+            if curl -s http://localhost:8080/home >/dev/null; then
+              echo "✅ Backend is up!"
+              exit 0
+            fi
+            echo "Waiting... ($i/20)"
+            sleep 5
+          done
+          echo "❌ Backend did not start in time"
+          docker logs be
+          exit 1
+
+      # Run frontend container
+      - name: Run frontend container
+        run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
+
+      # Debug backend logs if something fails
+      - name: Show backend logs on failure
+        if: failure()
+        run: docker logs be
+
+      # Set up Node.js for Cypress
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Run Cypress tests after backend+frontend are up
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+        env:
+          VITE_API_URL: http://localhost:8080
+
+      # Push frontend image after tests
+      - name: Push frontend Docker image
+        run: docker push cxgdn/arainea-frontend:latest
