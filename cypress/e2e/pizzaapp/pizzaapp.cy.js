@@ -1,4 +1,10 @@
 describe('Navbar navigation', () => {
+    it('checks backend is reachable before testing UI', () => {
+      cy.request('http://localhost:8080/home').then((res) => {
+        expect(res.status).to.eq(200)
+      })
+    })
+
     it('clicks the 3rd nav-link', () => {
       
       cy.visit('http://localhost:3000/')
