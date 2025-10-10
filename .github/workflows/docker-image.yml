@@ -51,8 +51,6 @@ jobs:
 
     - name: Run container for frontend
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
-    - name: Wait for backend
-      run: curl http://localhost:8080/home/
     - name: Show backend logs
       if: failure()
       run: docker logs be
