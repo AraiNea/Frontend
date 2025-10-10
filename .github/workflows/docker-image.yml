@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     services:
@@ -20,14 +19,14 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U postgres"
+          --health-cmd="pg_isready -U pizzauser"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
     env:
-      DB_URL: jdbc:postgresql://localhost:5432/pizza_mock
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_URL: jdbc:postgresql://postgres:5432/pizza
+      DB_USERNAME: pizzauser
+      DB_PASSWORD: pizzapass
       JWT_SECRET: mysupersecuresecretthatatleast32characterslong
 
     steps:
@@ -42,27 +41,45 @@ jobs:
       - name: Pull docker Image
         run: docker pull docker.io/pattaratos/arainea-backend:latest
 
-      # create network
+      # ✅ Create network
       - name: Create network
         run: docker network create arainea-net
 
+      # ✅ Run backend
       - name: Run backend
         run: |
           docker run -d --name be \
             --network=arainea-net \
             -p 8080:8080 \
-            --env SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/pizza_mock \
+            --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
             --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
             --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
             --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
             --env APP_JWT_EXPIRES_DAYS=30 \
             pattaratos/arainea-backend:latest
 
-      # เพิ่ม frontend container เข้า network เดียวกัน
-      - name: Run container for frontend
-        run: docker run -d --network=arainea-net -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
+      # ✅ Wait for backend to be ready
+      - name: Wait for backend to be ready
+        run: |
+          echo "⏳ Waiting for backend to start on port 8080..."
+          for i in {1..20}; do
+            if curl -s http://localhost:8080/actuator/health >/dev/null; then
+              echo "✅ Backend is up!"
+              exit 0
+            fi
+            echo "Waiting ($i/20)..."
+            sleep 5
+          done
+          echo "❌ Backend did not start in time."
+          docker logs be
+          exit 1
 
-      # Debug backend logs if fail
+      # ✅ Run frontend container (with same network + API URL)
+      - name: Run container for frontend
+        run: docker run -d --network=arainea-net -p 3000:3000 --name frontend \
+               -e VITE_API_URL=http://localhost:8080 \
+               cxgdn/arainea-frontend:latest
+
       - name: Show backend logs
         if: failure()
         run: docker logs be
@@ -75,7 +92,6 @@ jobs:
       - name: install dep
         run: npm ci
 
-      # Cypress จะรอจน frontend ขึ้น (3000)
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
