@@ -41,17 +41,16 @@ jobs:
     - name: Run docker for backend
       run: |
         docker run -d --name be \
-          --network host \
+          -p 8080:8080 \
           --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
           --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
           --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
           --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
           --env APP_JWT_EXPIRES_DAYS=30 \
           pattaratos/arainea-backend:latest
+
     - name: Run container for frontend
       run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
-    - name: Wait for backend
-      run: curl http://localhost:8080/home/
     - name: Show backend logs
       if: failure()
       run: docker logs be
