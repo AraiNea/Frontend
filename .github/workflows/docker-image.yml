@@ -7,16 +7,16 @@ on:
     branches: [ "main" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
-
     services:
       postgres:
-        image: postgres:17
+        image: postgres:16
         env:
-          POSTGRES_DB: pizza_mock
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pizza
+          POSTGRES_USER: pizzauser
+          POSTGRES_PASSWORD: pizzapass
         ports:
           - 5432:5432
         options: >-
@@ -24,7 +24,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
     env:
       DB_URL: jdbc:postgresql://localhost:5432/pizza_mock
       DB_USERNAME: postgres
@@ -32,69 +31,51 @@ jobs:
       JWT_SECRET: mysupersecuresecretthatatleast32characterslong
 
     steps:
-      # Checkout source code
       - uses: actions/checkout@v4
 
-      # Build frontend image
-      - name: Build frontend Docker image
+      - name: Build the Docker image
         run: docker build . --file Dockerfile --tag cxgdn/arainea-frontend:latest
 
-      # Login to Docker Hub
-      - name: Login to Docker Hub
+      - name: login
         run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
 
-      # Pull backend image
-      - name: Pull backend Docker image
+      - name: Pull docker Image
         run: docker pull docker.io/pattaratos/arainea-backend:latest
 
-      # Run backend container
-      - name: Run backend container
+      # create network
+      - name: Create network
+        run: docker network create arainea-net
+
+      - name: Run backend
         run: |
           docker run -d --name be \
+            --network=arainea-net \
             -p 8080:8080 \
-            --env SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
+            --env SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/pizza_mock \
             --env SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
             --env SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
             --env APP_JWT_SECRET=${{ env.JWT_SECRET }} \
             --env APP_JWT_EXPIRES_DAYS=30 \
             pattaratos/arainea-backend:latest
 
-      # Wait until backend responds
-      - name: Wait for backend to be ready
-        run: |
-          echo "⏳ Waiting for backend to respond on port 8080..."
-          for i in {1..20}; do
-            if curl -s http://localhost:8080/home >/dev/null; then
-              echo "✅ Backend is up!"
-              exit 0
-            fi
-            echo "Waiting... ($i/20)"
-            sleep 5
-          done
-          echo "❌ Backend did not start in time"
-          docker logs be
-          exit 1
+      # เพิ่ม frontend container เข้า network เดียวกัน
+      - name: Run container for frontend
+        run: docker run -d --network=arainea-net -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
 
-      # Run frontend container
-      - name: Run frontend container
-        run: docker run -d -p 3000:3000 --name frontend cxgdn/arainea-frontend:latest
-
-      # Debug backend logs if something fails
-      - name: Show backend logs on failure
+      # Debug backend logs if fail
+      - name: Show backend logs
         if: failure()
         run: docker logs be
 
-      # Set up Node.js for Cypress
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Install dependencies
-      - name: Install dependencies
+      - name: install dep
         run: npm ci
 
-      # Run Cypress tests after backend+frontend are up
+      # Cypress จะรอจน frontend ขึ้น (3000)
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -103,6 +84,5 @@ jobs:
         env:
           VITE_API_URL: http://localhost:8080
 
-      # Push frontend image after tests
-      - name: Push frontend Docker image
+      - name: push docker
         run: docker push cxgdn/arainea-frontend:latest
