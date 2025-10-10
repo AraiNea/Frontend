@@ -6,7 +6,7 @@ const CategoryCard = ({ category }) => {
         <div className="category-card mt-4">
             <Link to={category.categoryProductPath}>
                 <div className="card" style={{ width: '18rem', borderRadius: '10px' }}>
-                    <img src={category.categoryImgPath} className="card-img-top" alt={category.categoryName} />
+                    <img src={category.categoryProductPath} className="card-img-top" alt={category.categoryName} />
                     <div className="card-body text-center">
                         <h5 className="card-title">{category.categoryName}</h5>
                     </div>
