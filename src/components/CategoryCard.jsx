@@ -1,26 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const CategoryCard = ({ category }) => {
+const CategoryCard = ({ category, index }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/category/${category.categoryName}`);
+    };
+
     return (
-        <div className="category-card mt-4">
-            <Link to={category.categoryProductPath}>
-                <div className="card" style={{ width: '18rem', borderRadius: '10px' }}>
-                    <img src={`http://localhost:8080${category.categoryImgPath}`} className="card-img-top" alt={category.categoryName} />
-                    <div className="card-body text-center">
-                        <h5 className="card-title">{category.categoryName}</h5>
-                    </div>
-                </div>
-            </Link>
+        <div
+            className={`category-card category-${index}`}
+            onClick={handleClick}
+            style={{ cursor: "pointer" }}
+        >
+            <div className="category-content">
+                <img
+                    src={`http://localhost:8080${category.categoryImgPath}`}
+                    alt={category.categoryName}
+                    className="category-image"
+                />
+            </div>
+            <h5 className="category-title">{category.categoryName}</h5>
         </div>
     );
 };
 
 const CategoryList = ({ categories }) => {
     return (
-        <div className="category-list d-flex justify-content-around flex-wrap">
-            {categories.map((category) => (
-                <CategoryCard key={category.categoryId} category={category} />
+        <div className="category-list d-flex justify-content-start flex-wrap gap-4 mt-4 ps-4">
+            {categories.map((category, index) => (
+                <CategoryCard
+                    key={category.categoryId}
+                    category={category}
+                    index={index + 1}
+                />
             ))}
         </div>
     );

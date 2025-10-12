@@ -31,7 +31,7 @@ const Header = () => {
             <div className="top-bar py-2 d-none d-lg-block bg-light">
                 <div className="container-fluid container-xl">
                     <div className="row align-items-center">
-                        {/* Left */}
+                        {/* Top Left */}
                         <div className="col-lg-6">
                             <div className="d-flex align-items-center">
                                 <div className="top-bar-item me-4">
@@ -43,17 +43,6 @@ const Header = () => {
                                     <i className="bi bi-envelope-fill me-2"></i>
                                     <a href="mailto:support@example.com" style={{ color: "#e53935" }}>
                                         lnw(Piz)za007@gmail.com
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right */}
-                        <div className="col-lg-6">
-                            <div className="d-flex justify-content-end">
-                                <div className="top-bar-item me-4">
-                                    <a href="#" style={{ color: "#e53935" }}>
-                                        <i className="bi bi-truck me-2"></i> Track Order
                                     </a>
                                 </div>
                             </div>
@@ -94,11 +83,20 @@ const Header = () => {
 
                         {/* Actions */}
                         <div className="header-actions d-flex align-items-center justify-content-end">
-                            <a href="#" className="header-action-btn me-3">
-                                <i className="bi bi-cart3"></i>
-                                <span className="d-none d-md-inline-block">Cart</span>
-                                <span className="badge bg-danger">3</span>
-                            </a>
+                            {isLoggedIn && (
+                                <>
+                                    <a href="#" className="header-action-btn me-3">
+                                        <i className="bi bi-cart3"></i>
+                                        <span className="d-none d-md-inline-block">Cart</span>
+                                        <span className="badge bg-danger">3</span>
+                                    </a>
+                                    <a href="#" className="header-action-btn me-3">
+                                        <i className="bi bi-truck"></i>
+                                        <span className="d-none d-md-inline-block">Track Order</span>
+                                    </a>
+                                </>
+                            )}
+
                             <div className="dropdown">
                                 <button className="header-action-btn" data-bs-toggle="dropdown">
                                     <i className="bi bi-person"></i>
