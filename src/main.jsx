@@ -7,6 +7,9 @@ import Products from './pages/Products.jsx'
 import Login from "./pages/LogIn.jsx";
 import Search from "./pages/Search.jsx";
 import ProductsManage from "./pages/Admin/ProductsManage.jsx";
+import Register from "./pages/Register.jsx";
+import AdminRegister from "./pages/Admin/AdminRegister.jsx";
+
 createRoot(document.getElementById('root')).render(
   <Router>
     <Routes>
@@ -15,9 +18,11 @@ createRoot(document.getElementById('root')).render(
       <Route path="/category/" element={<Category />} />
       <Route path="/category/:categoryName" element={<CategoryProducts />} />
       <Route path="/product/:id" element={<Products />} />
-      <Route path="/login" element={<Login />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
+      <Route path="/adminRegister" element={<AdminRegister />} />
       <Route path="/productsManagement" element={<ProductsManage />} />
     </Routes>
   </Router>

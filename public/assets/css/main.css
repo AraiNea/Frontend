@@ -12385,3 +12385,177 @@ html, body, #root {
     padding: 20px;
   }
 }
+
+/* ============================
+  USer Register Page Styles
+   ============================ */
+.register-container {
+  min-height: calc(100vh - 160px);
+  background-color: #fff;
+}
+
+/* 🔹 ฟอร์มด้านขวา */
+.register-form-wrapper {
+  background-color: #fff;
+  padding: 60px 40px;
+}
+
+.register-form {
+  width: 80%;
+  max-width: 380px;
+  padding: 2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.register-form h3 {
+  font-weight: 600;
+  color: #333;
+}
+
+.register-form h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FB8C00;
+}
+
+.register-form .form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.register-form .form-control {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+.register-form .form-control:focus {
+  border-color: #FB8C00;
+  box-shadow: 0 0 4px rgba(251, 140, 0, 0.3);
+}
+
+/* 🔹 ปุ่ม Register */
+.register-button {
+  background-color: #FB8C00 !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 10px 0;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.register-button:hover {
+  background-color: #e67e00 !important;
+}
+
+/* ✅ Responsive */
+@media (max-width: 992px) {
+  .register-image {
+    display: none;
+  }
+
+  .register-form-wrapper {
+    padding: 40px 20px;
+  }
+
+  .register-form {
+    max-width: 100%;
+  }
+}
+
+/* ===============================
+  Admin Register Page Styling
+================================= */
+.admin-image {
+  flex: 1;
+  background: url("/assets/img/pizza/pizza-login.png") center/cover no-repeat;
+}
+
+.admin-register-container {
+  display: flex;
+  min-height: calc(100vh - 160px);
+  background-color: #fff;
+}
+
+.admin-register-image {
+  flex: 1;
+  background-image: url("/images/admin-register.jpg"); /* แก้ path ตามรูปจริง */
+  background-size: cover;
+  background-position: center;
+}
+
+.admin-register-form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 40px;
+}
+
+.admin-register-form {
+  width: 80%;
+  max-width: 380px;
+  padding: 2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.admin-register-form h3 {
+  font-weight: 600;
+  color: #333;
+}
+
+.admin-register-button {
+  background-color: #FB8C00 !important;
+  color: white !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.admin-register-button:hover {
+  background-color: #e67e00 !important;
+}
+
+/* Validation */
+.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+  font-size: 13px;
+  color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .admin-register-container {
+    flex-direction: column;
+  }
+
+  .admin-image {
+    height: 200px;
+    flex: none;
+  }
+
+  .admin-register-image {
+    height: 220px;
+  }
+
+  .admin-register-form-container {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-image {
+    height: 250px;
+    flex: none;
+  }
+}

@@ -98,6 +98,7 @@ function Login() {
                         <button
                             type="button"
                             className="btn btn-warning w-100"
+                            style={{ backgroundColor: "#FB8C00" }}
                             onClick={handleRegister}
                         >
                             Register
