@@ -1,17 +1,54 @@
-// Header.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import axios from "axios";
+import useMessage from "../components/useMessage";
+
+axios.defaults.withCredentials = true; // ✅ ส่ง cookie ทุก request
 
 const Header = () => {
     const navigate = useNavigate();
+    const { showMessageError, showMessageSuccess } = useMessage();
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(
+        localStorage.getItem("isLoggedIn") === "true" // ✅ ดึงสถานะจาก localStorage ตอนโหลด
+    );
+    const [username, setUsername] = useState(localStorage.getItem("username") || "");
+
+    // ✅ ตรวจสอบสถานะ login จาก backend (ยืนยันความถูกต้องของ cookie)
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const res = await axios.get("http://localhost:8080/profile/me");
+
+                if (res.data && res.data.username) {
+                    setIsLoggedIn(true);
+                    setUsername(res.data.username);
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("username", res.data.username);
+                } else {
+                    setIsLoggedIn(false);
+                    localStorage.removeItem("isLoggedIn");
+                    localStorage.removeItem("username");
+                }
+            } catch (err) {
+                // ✅ ถ้าแค่ยังไม่ล็อกอิน (401) — ไม่ต้องโชว์ alert
+                if (err.response?.status !== 401) {
+                    console.error("Login check failed:", err);
+                    showMessageError(err);
+                }
+                setIsLoggedIn(false);
+                localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("username");
+            }
+        };
+
+        checkLoginStatus();
+    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim() !== "") {
-            // ไปหน้า /search พร้อม query parameter
             navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
         }
     };
@@ -20,9 +57,18 @@ const Header = () => {
         navigate("/login");
     };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        console.log("User logged out");
+    const handleLogout = async () => {
+        try {
+            await axios.get("http://localhost:8080/profile/logout");
+            setIsLoggedIn(false);
+            setUsername("");
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+            showMessageSuccess("Logout successful");
+            navigate("/login");
+        } catch (e) {
+            showMessageError(e);
+        }
     };
 
     return (
@@ -31,7 +77,6 @@ const Header = () => {
             <div className="top-bar py-2 d-none d-lg-block bg-light">
                 <div className="container-fluid container-xl">
                     <div className="row align-items-center">
-                        {/* Top Left */}
                         <div className="col-lg-6">
                             <div className="d-flex align-items-center">
                                 <div className="top-bar-item me-4">
@@ -51,7 +96,7 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* 🔹 Main Header */}
+            {/* Main Header */}
             <div className="main-header">
                 <div className="container-fluid container-xl">
                     <div className="d-flex flex-wrap py-3 align-items-center">
@@ -63,10 +108,7 @@ const Header = () => {
                         </a>
 
                         {/* Search */}
-                        <form
-                            className="search-form desktop-search-form"
-                            onSubmit={handleSearch}
-                        >
+                        <form className="search-form desktop-search-form" onSubmit={handleSearch}>
                             <div className="input-group">
                                 <input
                                     type="text"
@@ -101,7 +143,7 @@ const Header = () => {
                                 <button className="header-action-btn" data-bs-toggle="dropdown">
                                     <i className="bi bi-person"></i>
                                     <span className="d-none d-md-inline-block">
-                                        {isLoggedIn ? "Account" : "Guest"}
+                                        {isLoggedIn ? username : "Guest"}
                                     </span>
                                 </button>
                                 <ul className="dropdown-menu">
@@ -134,38 +176,17 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* ✅ Mobile Search (แสดงเฉพาะจอเล็ก) */}
-            <div id="mobileSearch" className="d-lg-none">
-                <div className="container-fluid container-xl">
-                    <form className="search-form" onSubmit={handleSearch}>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search..."
-                            />
-                            <button className="btn search-btn" type="submit">
-                                <i className="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-
-            {/* 🔹 Nav */}
+            {/* Nav */}
             <div className="header-nav border-top">
                 <div className="container-fluid container-xl">
                     <nav className="navmenu">
                         <ul className="d-flex gap-4 list-unstyled mb-0">
                             <li>
                                 <NavLink
-                                    to="/" // เส้นทางที่ต้องการให้ลิงก์ไป
+                                    to="/"
                                     className="nav-link"
                                     style={({ isActive }) => ({
-                                        color: isActive ? "#e53935" : "#000", // เปลี่ยนสีเมื่อเป็น active
+                                        color: isActive ? "#e53935" : "#000",
                                     })}
                                 >
                                     Home
@@ -183,7 +204,8 @@ const Header = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/search"
+                                <NavLink
+                                    to="/search"
                                     className="nav-link"
                                     style={({ isActive }) => ({
                                         color: isActive ? "#e53935" : "#000",

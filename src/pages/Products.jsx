@@ -9,24 +9,22 @@ function Products() {
     const { showMessagePermission, showMessageError } = useMessage();
     const navigate = useNavigate();
 
-    const { id } = useParams(); //ดึง productId จาก URL
+    const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
 
+    // ✅ โหลดข้อมูลสินค้า
     const fetchData = async () => {
         try {
             const res = await axios.get(
-                `http://localhost:8080/product/list?productId=${id}`
+                `http://localhost:8080/product/list?productId=${id}`,
+                { withCredentials: true }
             );
-            console.log("already data");
-            console.log(res.data);
             if (res.data && res.data.products.length > 0) {
-                console.log("have data");
-                const found = res.data.products.find(p => String(p.productId) === String(id));
-                console.log(found);
-                if (found) {
-                    setProduct(found);
-                }
+                const found = res.data.products.find(
+                    (p) => String(p.productId) === String(id)
+                );
+                if (found) setProduct(found);
             }
         } catch (e) {
             if (e.response?.status === 401) {
@@ -52,81 +50,125 @@ function Products() {
     }
 
     const isOutOfStock = product.productStock === 0;
+    const isLoggedIn = localStorage.getItem("token") !== null;
+
+    /** ✅ กด Add to Cart */
+    const handleAddToCart = async (e) => {
+        e.stopPropagation();
+
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+
+        // ✅ คำนวณ lineTotal
+        const lineTotal = product.productPrice * Number(quantity);
+
+        const payload = {
+            productId: product.productId,
+            qty: Number(quantity),
+            lineTotal: lineTotal,
+        };
+
+        try {
+            const res = await axios.post(
+                "http://localhost:8080/cart/add",
+                payload,
+                {
+                    withCredentials: true, // ✅ ส่ง cookie ไปด้วย
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (res.status === 200 || res.status === 201) {
+                showMessagePermission(
+                    `✅ Added ${quantity}x ${product.productName} to cart (Total: $${lineTotal})`
+                );
+            } else {
+                showMessageError("Failed to add to cart.");
+            }
+        } catch (e) {
+            if (e.response?.status === 401) {
+                showMessagePermission("Please log in to add items.");
+                navigate("/login");
+            } else {
+                showMessageError(e);
+            }
+        }
+    };
 
     return (
-        <>
-            <div className="app-layout">
-                <Header />
-                <main className="main-content">
-                    <div className="container py-5">
-                        <button
-                            className="btn btn-danger d-flex align-items-center mb-3"
-                            style={{backgroundColor: "#e53935"}}
-                            onClick={() => navigate(-1)}
-                        >
-                            <i className="bi bi-arrow-left me-2"></i>
-                            Back
-                        </button>
+        <div className="app-layout">
+            <Header />
+            <main className="main-content">
+                <div className="container py-5">
+                    <button
+                        className="btn btn-danger d-flex align-items-center mb-3"
+                        style={{ backgroundColor: "#e53935" }}
+                        onClick={() => navigate(-1)}
+                    >
+                        <i className="bi bi-arrow-left me-2"></i>
+                        Back
+                    </button>
 
+                    <div className="row align-items-center">
+                        {/* Image */}
+                        <div className="col-md-6 text-center">
+                            <img
+                                src={`http://localhost:8080${product.productImgPath}`}
+                                alt={product.productName}
+                                className="img-fluid"
+                                style={{ maxWidth: "400px" }}
+                            />
+                        </div>
 
-                        <div className="row align-items-center">
-                            {/* Image */}
-                            <div className="col-md-6 text-center">
-                                <img
-                                    src={`http://localhost:8080${product.productImgPath}`}
-                                    alt={product.productName}
-                                    className="img-fluid"
-                                    style={{ maxWidth: "400px" }}
-                                />
-                            </div>
+                        {/* Info */}
+                        <div className="col-md-6">
+                            <h3>{product.productName}</h3>
+                            <h5 className="text-danger fw-bold mb-3">
+                                ${product.productPrice}
+                            </h5>
+                            <p className="text-muted">{product.productDetail}</p>
 
-                            {/* Info */}
-                            <div className="col-md-6">
-                                <h3>{product.productName}</h3>
-                                <h5 className="text-danger fw-bold mb-3">${product.productPrice}</h5>
-                                <p className="text-muted">{product.productDetail}</p>
+                            {/* Quantity */}
+                            <div className="mb-3">
+                                <label className="form-label fw-semibold">Quantity</label>
 
-                                {/* Quantity */}
-                                <div className="mb-3">
-                                    <label className="form-label fw-semibold">
-                                        Quantity
-                                    </label>
-
-                                    {isOutOfStock ? (
-                                        <p className="text-danger fw-bold">Out of Stock</p>
-                                    ) : (
-                                        <select
-                                            className="form-select"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                        >
-                                            {[...Array(product.productStock).keys()].map(
-                                                (q) => (
-                                                    <option key={q + 1} value={q + 1}>
-                                                        {q + 1}
-                                                    </option>
-                                                )
-                                            )}
-                                        </select>
-                                    )}
-                                </div>
-
-                                {/* Add to cart */}
-                                {!isOutOfStock && (
-                                    <button
-                                        className="btn btn-danger w-100"
-                                        style={{ backgroundColor: "#e53935" }}
+                                {isOutOfStock ? (
+                                    <p className="text-danger fw-bold">Out of Stock</p>
+                                ) : (
+                                    <select
+                                        className="form-select"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)}
                                     >
-                                        <i className="bi bi-cart-plus me-2"></i> Add to Cart
-                                    </button>
+                                        {[...Array(product.productStock).keys()].map((q) => (
+                                            <option key={q + 1} value={q + 1}>
+                                                {q + 1}
+                                            </option>
+                                        ))}
+                                    </select>
                                 )}
                             </div>
+
+                            {/* Add to cart */}
+                            {!isOutOfStock && (
+                                <button
+                                    className="btn btn-danger w-100"
+                                    style={{ backgroundColor: "#e53935" }}
+                                    onClick={handleAddToCart}
+                                >
+                                    <i className="bi bi-cart-plus me-2"></i> Add to Cart
+                                </button>
+                            )}
                         </div>
                     </div>
-                </main>
-                <Footer />
-            </div>
-        </>
+                </div>
+            </main>
+            <Footer />
+        </div>
     );
 }
 

@@ -1,5 +1,12 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
 /** การ์ดสินค้า */
 const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
+    const navigate = useNavigate();
+
+    const isLoggedIn = localStorage.getItem("token") !== null;
+    
     const Img =
         typeof picture === "string" ? (
             <img
@@ -15,6 +22,19 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
         ) : (
             picture
         );
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation(); // กันไม่ให้ trigger onClick ของการ์ด
+
+        if (!isLoggedIn) {
+            // ✅ ยังไม่ล็อกอิน → ไปหน้า login
+            navigate("/login");
+            return;
+        }
+
+        // ✅ ถ้าล็อกอินแล้ว → ทำฟังก์ชันที่ส่งมาจาก props
+        onAdd();
+    };
 
     return (
         <div className="col-12 col-sm-6 col-md-3 mb-4">
@@ -39,10 +59,7 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
                             type="button"
                             className="btn btn-danger d-flex align-items-center justify-content-center"
                             style={{ width: 44, height: 36, borderRadius: 10 }}
-                            onClick={(e) => {
-                                e.stopPropagation(); //กันไม่ให้ trigger onClick ของการ์ด
-                                onAdd();
-                            }}
+                            onClick={handleAddToCart}
                             title="Add to cart"
                         >
                             <i className="bi bi-cart" />

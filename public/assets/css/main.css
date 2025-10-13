@@ -12321,3 +12321,67 @@ html, body, #root {
     font-size: 1.5rem;
   }
 }
+
+/* ============================
+  Login Page Styles
+   ============================ */
+.login-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 🔹 ภาพด้านซ้าย */
+.login-image {
+  flex: 1;
+  background: url("/assets/img/pizza/pizza-login.png") no-repeat center center;
+  background-size: cover;
+}
+
+/* 🔹 ส่วนฟอร์มด้านขวา */
+.login-container {
+  display: flex;
+  height: calc(100vh - 160px); /* เว้น Header/Footer */
+  background-color: #fdfdfd;
+}
+
+.login-image {
+  flex: 1;
+  background: url("/assets/img/pizza/pizza-login.png") center/cover no-repeat;
+}
+
+.login-form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.login-form {
+  width: 80%;
+  max-width: 380px;
+  padding: 2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .form-label {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-image {
+    height: 250px;
+    flex: none;
+  }
+
+  .login-form-container {
+    padding: 20px;
+  }
+}

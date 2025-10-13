@@ -119,6 +119,18 @@ const useMessage = () => {
         });
         return result;
     };
+    const showMessageSuccess = (text) => {
+        Swal.fire({
+            text: text,
+            icon: "success",
+            showConfirmButton: true,
+            buttonsStyling: false,
+            confirmButtonText: "Close Window",
+            customClass: {
+                confirmButton: "btn form-Button-Swal me-3",
+            },
+        });
+    };
 
     return {
         showMessageAdjust,
@@ -129,6 +141,7 @@ const useMessage = () => {
         showMessageConfirmDelete,
         showMessageConfirmCancel,
         showMessageConfirmProcess,
+        showMessageSuccess,
     };
 };
 
