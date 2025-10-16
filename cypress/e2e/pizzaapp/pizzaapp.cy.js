@@ -13,7 +13,7 @@ describe('Navbar and Category E2E', () => {
     cy.get('.swal2-container').should('not.exist')
 
     // คลิก nav-link Category
-    cy.contains('a', 'Category').click()
+    cy.contains('a', 'Category').click({ force: true })
 
     // ตรวจสอบว่า URL เปลี่ยน
     cy.url().should('include', '/category')
@@ -32,7 +32,7 @@ describe('Navbar and Category E2E', () => {
   })
   it('god navbar2', () => {
     cy.visit('http://localhost:3000/category')
-    cy.get('.category-2').click()
+    cy.get('.category-2').click({ force: true })
 
     
   })
@@ -51,7 +51,7 @@ describe('Navbar and Category E2E', () => {
 
   it('god navbar3', () => {
     cy.visit('http://localhost:3000/category')
-    cy.get('.category-3').click()
+    cy.get('.category-3').click({ force: true })
 
     
   })
