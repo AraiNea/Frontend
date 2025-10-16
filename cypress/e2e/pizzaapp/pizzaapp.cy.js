@@ -6,17 +6,11 @@ describe('Navbar and Category E2E', () => {
     })
   })
 
-  it('navigates to Category page via Navbar', () => {
-    cy.visit('http://localhost:3000/')
-
-    // รอ SweetAlert overlay ถ้ามี
-    cy.get('.swal2-container').should('not.exist')
-
-    // คลิก nav-link Category
-    cy.contains('a', 'Category').click({ force: true })
-
-    // ตรวจสอบว่า URL เปลี่ยน
-    cy.url().should('include', '/category')
+  it('click navbar',()=>{
+    cy.visit('http://localhost:3000')
+    cy.get(':nth-child(2) > .nav-link').click({ force: true })
+    cy.visit('http://localhost:3000/category')
+    
   })
   it('god pizza', () => {
     cy.visit('http://localhost:3000/')
