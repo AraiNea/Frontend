@@ -11,9 +11,17 @@ describe('template spec', () => {
   })
   it('Assign', () => {
     cy.visit('http://localhost:3000/login')
-    cy.get(':nth-child(2) > .form-control').type('Jirayu')
-    cy.get(':nth-child(3) > .form-control').type('Jaidee')
+
+  
+    // กรอกข้อมูล login
+    // username
+    cy.get('input[placeholder="Value"]').eq(0).type('Jirayu', { force: true })
+
+    // password
+    cy.get('input[placeholder="Value"]').eq(1).type('Jaidee', { force: true })
     cy.get('.btn-danger').click({force:true})
-    cy.get('.swal2-confirm').click({force:true})
+
+    
+  
   })
 })
