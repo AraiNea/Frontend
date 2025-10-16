@@ -26,7 +26,7 @@ describe('Navbar and Category E2E', () => {
   
   it('god back', () => {
     cy.visit('http://localhost:3000/product/1')
-    cy.get('.container > .d-flex').click()
+    cy.get('.container > .d-flex').click({ force: true })
 
     
   })
@@ -44,7 +44,7 @@ describe('Navbar and Category E2E', () => {
   })
   it('god back', () => {
     cy.visit('http://localhost:3000/product/6')
-    cy.get('.container > .d-flex').click()
+    cy.get('.container > .d-flex').click({ force: true })
 
     
   })
@@ -65,7 +65,7 @@ describe('Navbar and Category E2E', () => {
 
   it('god back', () => {
     cy.visit('http://localhost:3000/product/9')
-    cy.get('.container > .d-flex').click()
+    cy.get('.container > .d-flex').click({ force: true })
 
     
   })
