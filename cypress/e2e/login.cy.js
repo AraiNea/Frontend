@@ -1,3 +1,4 @@
+import { tree } from "next/dist/build/templates/app-page"
 
 describe('template spec', () => {
   it('passes', () => {
@@ -13,7 +14,7 @@ describe('template spec', () => {
     cy.visit('http://localhost:3000/login')
     cy.get(':nth-child(2) > .form-control').type('Jirayu')
     cy.get(':nth-child(3) > .form-control').type('Jaidee')
-    cy.get('.btn-danger').click()
-    cy.get('.swal2-confirm').click()
+    cy.get('.btn-danger').click({force:true})
+    cy.get('.swal2-confirm').click({force:true})
   })
 })
