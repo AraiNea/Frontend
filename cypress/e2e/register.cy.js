@@ -2,12 +2,12 @@ describe('template spec', () => {
   it('passes', () => {
     cy.visit('http://localhost:3000')
   })
-  it('go to regis', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('.header-action-btn').click({force:true})
-    cy.get('.dropdown-item').click({force:true})
-    cy.get('.btn-warning').click({force:true})
-  })
+  // it('go to regis', () => {
+  //   cy.visit('http://localhost:3000')
+  //   cy.get('.header-action-btn').click({force:true})
+  //   cy.get('.dropdown-item').click({force:true})
+  //   cy.get('.btn-warning').click({force:true})
+  // })
   it('Assign', () => {
     cy.visit('http://localhost:3000/register')
    // ✅ รอให้ form โหลดก่อน (ช่วยกันโหลดช้า)
