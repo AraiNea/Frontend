@@ -5,15 +5,16 @@ describe('Navbar navigation', () => {
     })
   })
 
-  it('clicks the 3rd nav-link and goes to Category page', () => {
+  it('clicks Category nav-link and goes to Category page', () => {
     cy.visit('http://localhost:3000/')
 
-    // สมมติ nav-link เป็นลิสต์ li หรือ a
-    cy.get(':nth-child(2) > .nav-link').click() // index 2 คือ 3rd element
+    // รอ overlay ถ้ามี
+    cy.get('.swal2-container').should('not.exist')
 
-   
+    // คลิก nav-link ไปหน้า Category
+    cy.contains('a', 'Category').click()
+
+    // ตรวจสอบ URL
+    cy.url().should('include', '/category')
   })
-
-  
 })
-
