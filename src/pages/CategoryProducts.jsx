@@ -16,15 +16,18 @@ const CategoryProducts = () => {
         try {
             const res = await axios.get("http://localhost:8080/category/");
             if (res.data && res.data.products) {
-                // ✅ กรองสินค้าตามหมวด
+                // ✅ กรองสินค้าตามหมวด + แสดงเฉพาะสินค้าที่เปิดอยู่
                 const filteredProducts = res.data.products.filter(
-                    (p) => p.categoryName.toLowerCase() === categoryName.toLowerCase()
+                    (p) =>
+                        p.categoryName.toLowerCase() === categoryName.toLowerCase() &&
+                        p.isActive === 1
                 );
+
                 const foundCategory = res.data.categories.find(
                     (c) => c.categoryName.toLowerCase() === categoryName.toLowerCase()
                 );
 
-                // ✅ เตรียมข้อมูลให้เข้ากับโครงสร้าง CatalogGrid
+                // ✅ จัด format ให้เข้ากับ CatalogGrid
                 const formattedData = {
                     results: [
                         {
@@ -33,6 +36,7 @@ const CategoryProducts = () => {
                         },
                     ],
                 };
+
                 setCategoryData(formattedData);
             }
         } catch (e) {
@@ -48,9 +52,7 @@ const CategoryProducts = () => {
     return (
         <div className="app-layout">
             <Header />
-
             <main className="main-content container py-5 category-products-page">
-
                 {categoryData ? (
                     <CatalogGrid
                         data={categoryData}
@@ -60,7 +62,6 @@ const CategoryProducts = () => {
                     <p className="text-center text-muted">Loading products...</p>
                 )}
             </main>
-
             <Footer />
         </div>
     );

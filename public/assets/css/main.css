@@ -12286,19 +12286,25 @@ html, body, #root {
   CategoryProducts Page Styles
    ============================= */
 .card {
-  border-radius: 15px !important;
+  border-radius: 15px;
+  overflow: hidden; /* ✅ ป้องกันภาพหรือเงาเกินมุมโค้ง */
   transition: all 0.3s ease;
   background-color: #fff !important;
+  border: 1px solid transparent; /* ✅ มี border ตั้งแต่แรก ป้องกันขยับเวลา hover */
 }
 
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   border: 1px solid #e53935 !important;
+  border-radius: 15px; /* ✅ คงมุมโค้งไว้ */
 }
 
+/* 🔤 ข้อความในการ์ด */
 .card-body h5 {
   color: #222;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 .card-body p {
@@ -12685,4 +12691,418 @@ html, body, #root {
   .btn-danger {
     width: 100%;
   }
+}
+
+/* ============================
+    Product management Page Styles
+   ============================ */
+.product-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0 1rem;
+}
+
+/* ช่องค้นหา */
+.product-search-box {
+  flex: 1;
+  max-width: 250px;
+  height: 38px;
+  padding: 0 1rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 50px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* เอฟเฟกต์เมื่อ focus */
+.product-search-box:focus {
+  border-color: #ff4b4b;
+  box-shadow: 0 0 6px rgba(255, 75, 75, 0.2);
+}
+
+/* ปุ่ม Add Item */
+.product-btn-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ff4b4b;
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-btn-add i {
+  font-size: 14px;
+}
+
+.product-btn-add:hover {
+  background-color: #e03a3a;
+  transform: translateY(-1px);
+}
+
+/* Recommended text */
+.product-header p {
+  font-size: 15px;
+  margin: 0;
+}
+
+.product-header .text-danger {
+  font-weight: 600;
+}
+
+/* ==== Table Section ==== */
+.product-table {
+  background-color: #fff3e6;
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 400px; /* ✅ Scroll zone height */
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Scrollbar */
+.product-table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product-table::-webkit-scrollbar-thumb {
+  background-color: #e67e00;
+  border-radius: 4px;
+}
+
+.product-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.product-management-table thead th {
+  font-weight: 600;
+  color: #444;
+  background-color: #fff3e6;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 2px solid #f5d3b5;
+}
+
+.product-management-table tbody tr {
+  background-color: #fffaf3;
+  border-bottom: 1px solid #f4e3d2;
+}
+
+.product-management-table tbody tr:hover {
+  background-color: #ffe9d2;
+  transition: background-color 0.2s;
+}
+
+.product-management-table td {
+  padding: 0.75rem 0.5rem;
+  vertical-align: middle;
+}
+
+/* ==== Buttons ==== */
+.btn-edit,
+.btn-delete {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 5px;
+}
+
+.btn-edit {
+  color: #e53935;
+}
+
+.btn-delete {
+  color: #d9442e;
+}
+
+.btn-edit:hover,
+.btn-delete:hover {
+  opacity: 0.7;
+}
+
+/* ==== Switch Toggle ==== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #c9c9c9;
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .slider {
+  background-color: #ff9500;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ==== Modal Form ==== */
+.product-modal .upload-box {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s;
+}
+
+.product-modal .upload-box:hover {
+  border-color: #e67e00;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.upload-icon {
+  font-size: 1.8rem;
+  color: #999;
+}
+
+.product-modal .form-group label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.product-modal .form-group input,
+.product-modal .form-group textarea {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.product-modal .form-group input:focus,
+.product-modal .form-group textarea:focus {
+  border-color: #e67e00;
+}
+
+.btn-save {
+  background-color: #e67e00;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+  background-color: #d9442e;
+}
+
+/* ==== Footer ==== */
+footer {
+  background-color: #fff8ee;
+  padding: 1rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.product-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #eaeaea;
+}
+
+/* Dropdown style */
+.product-modal select.form-control {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #fff;
+}
+
+.product-modal select.form-control:focus {
+  border-color: #f25a44;
+}
+
+/* ============================
+    Modal Styles
+   ============================ */
+/* ==== Modal General ==== */
+.modal-content {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  border-bottom: none;
+  padding: 0.5rem 1rem;
+  justify-content: flex-end;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* ==== Card inside Modal ==== */
+.card.border-Modal {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.form-Head-Background {
+  background-color: #e53e30;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 12px 12px 0 0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.card-body {
+  padding: 1.5rem 2rem;
+  background-color: #fff;
+}
+
+/* ==== Upload Box with Edit Icon ==== */
+.product-modal .upload-box {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 1.5px solid #f2d6c5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background-color: #fff9f5;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.product-modal .upload-box:hover {
+  border-color: #e53e30;
+}
+
+.product-modal .preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-edit-icon {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background-color: #e67e00;
+  color: white;
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==== Form Field ==== */
+.product-modal .form-group {
+  margin-bottom: 0.9rem;
+}
+
+.product-modal label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.product-modal .form-control,
+.product-modal textarea,
+.product-modal select {
+  border: 1.5px solid #f2d6c5;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.product-modal .form-control:focus,
+.product-modal textarea:focus,
+.product-modal select:focus {
+  border-color: #e53e30;
+  box-shadow: 0 0 0 2px rgba(229, 62, 48, 0.2);
+}
+
+/* ==== Save Button ==== */
+.btn-save {
+  background-color: #e53e30;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+  background-color: #c73628;
+}
+
+/* Scrollable modal body */
+.modal-dialog.modal-dialog-scrollable .modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
 }

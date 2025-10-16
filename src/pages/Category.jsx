@@ -9,19 +9,22 @@ function Category() {
     const { showMessagePermission, showMessageError } = useMessage();
     const [categories, setCategories] = useState([]);
 
-
     const fetchCategoryData = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/category/`);
+            const res = await axios.get("http://localhost:8080/category/");
             if (res.data) {
-                setCategories(res.data.categories);
+                // ✅ กรอง category ที่มีสินค้าเปิดอยู่เท่านั้น (ถ้ามีข้อมูล products)
+                const visibleCategories = res.data.categories?.filter(
+                    (c) =>
+                        !c.products ||
+                        c.products.some((p) => p.isActive === 1)
+                ) || [];
+
+                setCategories(visibleCategories);
             }
         } catch (e) {
-            if (e.response?.status === 401) {
-                showMessagePermission();
-            } else {
-                showMessageError(e);
-            }
+            if (e.response?.status === 401) showMessagePermission();
+            else showMessageError(e);
         }
     };
 
@@ -30,20 +33,17 @@ function Category() {
     }, []);
 
     return (
-        <>
-            <div className="app-layout">
-                <Header />
-                <main className="main-content">
-                    {/* ตรวจสอบว่า categories มีข้อมูลก่อนส่งไปที่ CategoryList */}
-                    {categories && categories.length > 0 ? (
-                        <CategoryList categories={categories} />
-                    ) : (
-                        <div>Loading categories...</div>
-                    )}
-                </main>
-                <Footer />
-            </div>
-        </>
+        <div className="app-layout">
+            <Header />
+            <main className="main-content">
+                {categories.length > 0 ? (
+                    <CategoryList categories={categories} />
+                ) : (
+                    <div className="text-center text-muted mt-5">Loading categories...</div>
+                )}
+            </main>
+            <Footer />
+        </div>
     );
 }
 
