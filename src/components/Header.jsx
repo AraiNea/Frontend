@@ -44,6 +44,15 @@ const Header = () => {
         };
 
         checkLoginStatus();
+        const handleProfileUpdate = () => {
+            const updatedUsername = localStorage.getItem("username");
+            if (updatedUsername) {
+                setUsername(updatedUsername);
+            }
+        };
+        window.addEventListener("profileUpdated", handleProfileUpdate);
+
+        return () => window.removeEventListener("profileUpdated", handleProfileUpdate);
     }, []);
 
     const handleSearch = (e) => {

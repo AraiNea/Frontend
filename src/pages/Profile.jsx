@@ -54,7 +54,6 @@ function EditProfile() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // ✅ กด Save
     const handleSave = async (e) => {
         e.preventDefault();
         try {
@@ -70,8 +69,10 @@ function EditProfile() {
                 { withCredentials: true }
             );
 
-            if (res.data?.message === "success") {
+            if (res.data?.message === "update success" || res.data?.message === "success") {
                 showMessageSave();
+                localStorage.setItem("username", formData.username);
+                window.dispatchEvent(new Event("profileUpdated"));
             } else {
                 showMessageError("Failed to update profile");
             }
@@ -80,6 +81,7 @@ function EditProfile() {
             else showMessageError("Error updating profile");
         }
     };
+
 
     if (loading) {
         return (
