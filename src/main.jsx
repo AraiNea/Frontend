@@ -9,6 +9,7 @@ import Search from "./pages/Search.jsx";
 import ProductsManage from "./pages/Admin/ProductsManage.jsx";
 import Register from "./pages/Register.jsx";
 import AdminRegister from "./pages/Admin/AdminRegister.jsx";
+import Profile from "./pages/Profile.jsx";
 
 createRoot(document.getElementById('root')).render(
   <Router>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/search" element={<Search />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/profile" element={<Profile />} />
 
       <Route path="/adminRegister" element={<AdminRegister />} />
       <Route path="/productsManagement" element={<ProductsManage />} />

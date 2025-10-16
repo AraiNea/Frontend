@@ -12559,3 +12559,130 @@ html, body, #root {
     flex: none;
   }
 }
+
+/* ============================
+  Edit Profile Page Styles
+   ============================ */ 
+.edit-profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+  background-color: #fff;
+}
+
+/* กล่องฟอร์ม */
+.edit-profile-box {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.edit-profile-box:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+
+.edit-profile-box h4 {
+  font-weight: 600;
+  color: #e53935;
+  letter-spacing: 0.5px;
+  font-size: 1.4rem;
+}
+
+/* ช่อง Label */
+.form-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+/* ช่อง input */
+.form-InputM {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 8px 12px;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.form-InputM:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 6px rgba(229, 57, 53, 0.35);
+  outline: none;
+}
+
+/* ===== Password Eye ===== */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 2.4rem;
+}
+
+.toggle-eye {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #e53935;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.toggle-eye:hover {
+  color: #c62828;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ===== ปุ่ม Save ===== */
+.btn-danger {
+  background-color: #e53935 !important;
+  border: none !important;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 8px 28px;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #c62828 !important;
+  transform: translateY(-2px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .edit-profile-box {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .form-InputM {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .toggle-eye {
+    font-size: 16px;
+    right: 10px;
+  }
+
+  .edit-profile-box h4 {
+    font-size: 1.2rem;
+  }
+
+  .btn-danger {
+    width: 100%;
+  }
+}

@@ -150,7 +150,7 @@ const Header = () => {
                                     {isLoggedIn ? (
                                         <>
                                             <li>
-                                                <a className="dropdown-item" href="#">
+                                                <a className="dropdown-item" href="/profile">
                                                     Profile
                                                 </a>
                                             </li>
@@ -173,6 +173,25 @@ const Header = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div id="mobileSearch" className="d-lg-none">
+                <div className="container-fluid container-xl">
+                    <form className="search-form" onSubmit={handleSearch}>
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search..."
+                            />
+                            <button className="btn search-btn" type="submit">
+                                <i className="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
