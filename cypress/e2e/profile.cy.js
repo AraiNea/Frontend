@@ -12,5 +12,8 @@ describe('template spec', () => {
     cy.get('[name="username"]').should('be.visible').type('aikeaw')
     cy.get('[name="profileSname"]').should('be.visible').type('Saepoo')
     cy.get('[name="password"]').should('be.visible').type('12345')
+    cy.get('.mt-4 > .btn').click()
+    cy.get('.swal2-confirm').click()
+
   })
 })
