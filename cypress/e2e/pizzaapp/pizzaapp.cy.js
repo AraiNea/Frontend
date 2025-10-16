@@ -1,20 +1,28 @@
-describe('Navbar navigation', () => {
-  it('checks backend is reachable before testing UI', () => {
+describe('Navbar and Category E2E', () => {
+
+  it('checks backend is reachable', () => {
     cy.request('http://localhost:3000').then((res) => {
       expect(res.status).to.eq(200)
     })
   })
 
-  it('clicks Category nav-link and goes to Category page', () => {
+  it('navigates to Category page via Navbar', () => {
     cy.visit('http://localhost:3000/')
 
-    // รอ overlay ถ้ามี
+    // รอ SweetAlert overlay ถ้ามี
     cy.get('.swal2-container').should('not.exist')
 
-    // คลิก nav-link ไปหน้า Category
+    // คลิก nav-link Category
     cy.contains('a', 'Category').click()
 
-    // ตรวจสอบ URL
+    // ตรวจสอบว่า URL เปลี่ยน
     cy.url().should('include', '/category')
   })
+  it('god pizza', () => {
+    cy.visit('http://localhost:3000/')
+
+    cy.get(':nth-child(1) > .row > :nth-child(1) > .card > .card-body').click()
+  })
+  
+
 })
