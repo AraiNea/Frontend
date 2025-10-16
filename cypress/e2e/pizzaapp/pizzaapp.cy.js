@@ -1,27 +1,67 @@
-describe('Navbar navigation', () => {
-    it('checks backend is reachable before testing UI', () => {
-      cy.request('http://localhost:8080/home/').then((res) => {
-        expect(res.status).to.eq(200)
-      })
-    })
+describe('Navbar and Category E2E', () => {
 
-    it('clicks the 3rd nav-link', () => {
-      
-      cy.visit('http://localhost:3000/')
-      
-      
-      cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
-        .should('be.visible')  
-        .click({force: true})
-      cy.get('.form-control').first().type('Water', { force: true })
-      cy.get('.py-3').click({ force: true })
-      cy.get(':nth-child(1) > .nav-link').click({force: true})
-      cy.get(':nth-child(3) > .nav-link', { timeout: 10000 })
-        .should('be.visible')  
-        .click({force: true})
-      cy.get('.form-control').first().type('BBQ', { force: true })
-
-
-
+  it('checks backend is reachable', () => {
+    cy.request('http://localhost:3000').then((res) => {
+      expect(res.status).to.eq(200)
     })
   })
+
+  it('click navbar',()=>{
+    cy.visit('http://localhost:3000')
+    cy.get(':nth-child(2) > .nav-link').click({ force: true })
+    cy.visit('http://localhost:3000/category')
+    
+  })
+  it('god pizza', () => {
+    cy.visit('http://localhost:3000/')
+
+    cy.get(':nth-child(1) > .row > :nth-child(1) > .card > .card-body').click({ force: true })
+  })
+  
+  it('god back', () => {
+    cy.visit('http://localhost:3000/product/1')
+    cy.get('.container > .d-flex').click({ force: true })
+
+    
+  })
+  it('god navbar2', () => {
+    cy.visit('http://localhost:3000/category')
+    cy.get('.category-2').click({ force: true })
+
+    
+  })
+  it('god garlicbread', () => {
+    cy.visit('http://localhost:3000/category/appetizer')
+    cy.get(':nth-child(1) > .card > .card-body').click({ force: true })
+
+    
+  })
+  it('god back', () => {
+    cy.visit('http://localhost:3000/product/6')
+    cy.get('.container > .d-flex').click({ force: true })
+
+    
+  })
+
+  it('god navbar3', () => {
+    cy.visit('http://localhost:3000/category')
+    cy.get('.category-3').click({ force: true })
+
+    
+  })
+
+  it('god garlicbread', () => {
+    cy.visit('http://localhost:3000/category/drink')
+    cy.get(':nth-child(1) > .card > .card-body').click({ force: true })
+
+    
+  })
+
+  it('god back', () => {
+    cy.visit('http://localhost:3000/product/9')
+    cy.get('.container > .d-flex').click({ force: true })
+
+    
+  })
+
+})
