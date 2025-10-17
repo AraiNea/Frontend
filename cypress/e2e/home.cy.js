@@ -85,4 +85,54 @@ describe('template spec', () => {
     
   })
 
+  beforeEach(() => {
+    cy.visit('http://localhost:3000');
+    cy.viewport(1280, 800);
+
+    // Login
+    cy.contains('span', 'Guest').click();
+    cy.contains('button.dropdown-item', 'Log In').click({ force: true });
+    cy.contains('label', 'Username').next('input.form-control').type('alice');
+    cy.contains('label', 'Password').next('input[type="password"]').type('alice123');
+    cy.contains('button.btn.btn-danger', 'Sign In').click();
+  });
+
+  it('should check and click Cart', () => {
+    
+    // รอให้ Cart ปรากฏ
+    cy.contains('span', 'Cart', { timeout: 10000 }).should('be.visible');
+
+    // คลิกปุ่ม Cart แบบเจาะจงปุ่มแรก
+    cy.get('button.header-action-btn').first().click();
+
+    // ตรวจ badge จำนวนสินค้า
+    cy.get('button.header-action-btn')
+      .first()
+      .find('span.badge')
+      .should('be.visible')
+      ;
+    cy.contains('button', 'Check out').click();
+    cy.contains('button', 'Check out').click();
+    
+  });
+  
+  it('logout', () => {
+    cy.contains('button.header-action-btn span', 'alice')
+  .should('be.visible')
+  .click();
+  cy.contains('button.dropdown-item', 'Logout')
+  .should('be.visible')
+  .click();
+  
+
+
+  });
+
+  
+  
+  
+
+  
+  
+
 })
