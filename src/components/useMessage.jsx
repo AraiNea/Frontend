@@ -31,7 +31,7 @@ const useMessage = () => {
         });
         sessionStorage.clear();
         localStorage.clear();
-        navigate('http://localhost:5173/');
+        navigate('/login');
     };
     const showMessageError = (e) => {
         Swal.fire({
