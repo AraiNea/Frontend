@@ -45,8 +45,8 @@ describe('template spec', () => {
     cy.visit('http://localhost:3000')
     cy.contains('a', 'Category').click()
     cy.contains('.category-title', 'appetizer').click()
-    cy.contains('h5', 'Garlic Bread').should('be.visible')
-    cy.contains('h5', 'Garlic Bread').click()
+    cy.contains('h5', 'Chicken Wings').should('be.visible')
+    cy.contains('h5', 'Chicken Wings').click()
 
     
 
@@ -116,13 +116,53 @@ describe('template spec', () => {
     
   });
   
-  it('logout', () => {
+  it('logout and rgister', () => {
     cy.contains('button.header-action-btn span', 'alice')
   .should('be.visible')
   .click();
   cy.contains('button.dropdown-item', 'Logout')
   .should('be.visible')
   .click();
+  cy.get('button.swal2-confirm.btn.form-Button-Swal.me-3')
+    .should('be.visible')
+    .click();
+  cy.contains('label', 'Username').next('input.form-control').type('nompong');
+  cy.contains('label', 'Password').next('input[type="password"]').type('nmpong1234');
+  cy.get('button.btn.btn-warning.w-100')
+    .should('be.visible')  // ตรวจสอบว่าปุ่มเห็นได้
+    .click();   
+    cy.get('input[name="username"]').type('myUsername');
+    cy.get('input[name="password"]').type('myPassword');
+    cy.get('input[name="profileName"]')
+    .should('be.visible')
+    .type('Daraporn');
+
+  // กรอกนามสกุล
+  cy.get('input[name="profileSname"]')
+    .should('be.visible')
+    .type('Saepoo');
+    // กรอก Address/Contact ข้อมูล
+    cy.get('input[name="phone"]').first().type('0812345678');
+    cy.get('input[name="province"]').first().type('Bangkok');
+    cy.get('input[name="amphor"]').first().type('Bang Kapi');
+    cy.get('input[name="district"]').first().type('Hua Mak');
+    cy.get('input[name="zipCode"]').first().type('10240');
+    cy.get('input[name="addrNum"]').first().type('123/45');
+    cy.get('input[name="detail"]').first().type('Apartment 2B');
+    cy.get('input[name="receivedName"]').first().type('Daraporn Saepoo');
+  
+    // ถ้ามีปุ่ม Submit / Register ให้คลิก
+    cy.contains('button', 'Register')
+  .should('be.visible')
+  .click();
+  cy.get('.swal2-container')
+    .should('be.visible');
+
+  // คลิกปุ่ม Close Window
+  cy.get('button.swal2-confirm.btn.form-Button-Swal.me-3')
+    .should('be.visible')
+    .click();
+
   
 
 
