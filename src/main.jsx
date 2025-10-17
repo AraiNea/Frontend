@@ -11,6 +11,8 @@ import Register from "./pages/Register.jsx";
 import AdminRegister from "./pages/Admin/AdminRegister.jsx";
 import Profile from "./pages/Profile.jsx";
 import AdminProfile from "./pages/Admin/AdminProfile.jsx";
+import Cart from "./pages/Cart.jsx";
+import UpdateAddress from "./pages/Address.jsx";
 
 createRoot(document.getElementById('root')).render(
   <Router>
@@ -23,9 +25,14 @@ createRoot(document.getElementById('root')).render(
       <Route path="/search" element={<Search />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/profile" element={<Profile />} />
-
       <Route path="/adminRegister" element={<AdminRegister />} />
+
+      {/* userInfo needed */}
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/updateAddress" element={<UpdateAddress />} />
+
+      {/* adminInfo needed */}
       <Route path="/ProductsManagement" element={<ProductsManage />} />
       <Route path="/adminProfile" element={<AdminProfile />} />
     </Routes>

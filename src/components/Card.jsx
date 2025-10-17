@@ -1,12 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import useMessage from "../components/useMessage";
+
+axios.defaults.withCredentials = true; // ✅ ส่ง cookie ทุก request
 
 /** การ์ดสินค้า */
-const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
+const ProductCard = ({ picture, title, subtitle, price, stock, onAdd, onClick }) => {
     const navigate = useNavigate();
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-    const isLoggedIn = localStorage.getItem("token") !== null;
-    
     const Img =
         typeof picture === "string" ? (
             <img
@@ -24,15 +27,14 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
         );
 
     const handleAddToCart = (e) => {
-        e.stopPropagation(); // กันไม่ให้ trigger onClick ของการ์ด
+        e.stopPropagation();
 
         if (!isLoggedIn) {
-            // ✅ ยังไม่ล็อกอิน → ไปหน้า login
             navigate("/login");
             return;
         }
 
-        // ✅ ถ้าล็อกอินแล้ว → ทำฟังก์ชันที่ส่งมาจาก props
+        if (stock === 0) return; // ✅ ป้องกันกดเพิ่มสินค้าหมดสต็อก
         onAdd();
     };
 
@@ -51,16 +53,24 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
                     <div className="w-100 d-flex justify-content-center mb-2">{Img}</div>
 
                     <h5 className="mb-1 fw-semibold">{title}</h5>
-                    {subtitle && <p className="text-muted small mb-5">{subtitle}</p>}
+                    {subtitle && <p className="text-muted small mb-4">{subtitle}</p>}
+
+                    {stock === 0 ? (
+                        <p className="text-danger fw-semibold mb-3">Out of Stock</p>
+                    ) : (
+                        <p className="text-muted small mb-3">In Stock: {stock}</p>
+                    )}
 
                     <div className="mt-auto d-flex align-items-center justify-content-between">
                         <div className="fw-semibold">${price}</div>
                         <button
                             type="button"
-                            className="btn btn-danger d-flex align-items-center justify-content-center"
+                            className={`btn ${stock === 0 ? "btn-secondary disabled" : "btn-danger"
+                                } d-flex align-items-center justify-content-center`}
                             style={{ width: 44, height: 36, borderRadius: 10 }}
                             onClick={handleAddToCart}
-                            title="Add to cart"
+                            title={stock === 0 ? "Out of stock" : "Add to cart"}
+                            disabled={stock === 0} // ✅ disable ปุ่ม
                         >
                             <i className="bi bi-cart" />
                         </button>
@@ -73,10 +83,52 @@ const ProductCard = ({ picture, title, subtitle, price, onAdd, onClick }) => {
 
 /** กริดแสดงหมวดหมู่ + สินค้า 4 ใบ/แถว */
 const CatalogGrid = ({ data, onProductClick }) => {
-    // data format: { results: [ { category:{categoryId, categoryName}, products:[...] }, ... ] }
+    const { showMessageError, showMessageSuccess, showMessageAdjust } = useMessage();
+
     const groups = [...(data?.results ?? [])].sort(
         (a, b) => a.category.categoryId - b.category.categoryId
     );
+
+    /** ✅ เพิ่มสินค้าลงตะกร้า */
+    const handleAddToCart = async (product) => {
+        try {
+            // 🧩 1. ถ้าหมดสต็อก → ห้ามเพิ่ม
+            if (product.productStock === 0) {
+                showMessageAdjust(`"${product.productName}" is out of stock.`, "error");
+                return;
+            }
+
+            // 🧩 2. โหลดข้อมูล cart ปัจจุบัน
+            const cartRes = await axios.get("http://localhost:8080/cart/list", {
+                withCredentials: true,
+            });
+
+            const existingItem = cartRes.data?.cartItems?.find(
+                (i) => i.productId === product.productId
+            );
+
+            if (existingItem) {
+                showMessageAdjust("This item is already in your cart.", "info");
+                return;
+            }
+
+            // 🧩 3. เพิ่มสินค้าใหม่ (qty = 1)
+            await axios.post(
+                "http://localhost:8080/cart/addItems",
+                {
+                    productId: product.productId,
+                    qty: 1,
+                    lineTotal: product.productPrice,
+                },
+                { withCredentials: true }
+            );
+
+            showMessageSuccess(`"${product.productName}" added to your cart successfully!`);
+            window.dispatchEvent(new Event("cartUpdated"));
+        } catch (err) {
+            showMessageError(err);
+        }
+    };
 
     return (
         <div className="container px-0">
@@ -90,13 +142,13 @@ const CatalogGrid = ({ data, onProductClick }) => {
                         {group.products?.map((p) => (
                             <ProductCard
                                 key={p.productId}
-                                // ใช้รูปจาก URL หรือปล่อยว่างก็ได้
                                 picture={p.productImgPath || "/images/placeholder.png"}
                                 title={p.productName}
                                 subtitle={p.productDetail}
                                 price={p.productPrice}
-                                onAdd={() => console.log("add", p.productId)}
-                                onClick={() => onProductClick(p.productId)} //ส่ง productId
+                                stock={p.productStock} // ✅ ส่ง stock ลงไปด้วย
+                                onAdd={() => handleAddToCart(p)}
+                                onClick={() => onProductClick(p.productId)}
                             />
                         ))}
                     </div>

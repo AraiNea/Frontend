@@ -6,14 +6,13 @@ import Footer from "../components/Footer";
 import useMessage from "../components/useMessage";
 
 function Products() {
-    const { showMessagePermission, showMessageError } = useMessage();
+    const { showMessagePermission, showMessageError, showMessageAdjust, showMessageSuccess } = useMessage();
     const navigate = useNavigate();
-
     const { id } = useParams();
+
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
 
-    // ✅ โหลดข้อมูลสินค้า
     const fetchData = async () => {
         try {
             const res = await axios.get(
@@ -50,9 +49,8 @@ function Products() {
     }
 
     const isOutOfStock = product.productStock === 0;
-    const isLoggedIn = localStorage.getItem("token") !== null;
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-    /** ✅ กด Add to Cart */
     const handleAddToCart = async (e) => {
         e.stopPropagation();
 
@@ -61,7 +59,6 @@ function Products() {
             return;
         }
 
-        // ✅ คำนวณ lineTotal
         const lineTotal = product.productPrice * Number(quantity);
 
         const payload = {
@@ -71,21 +68,26 @@ function Products() {
         };
 
         try {
-            const res = await axios.post(
-                "http://localhost:8080/cart/add",
-                payload,
-                {
-                    withCredentials: true, // ✅ ส่ง cookie ไปด้วย
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+            // 🧩 ตรวจว่ามีสินค้าในตะกร้าแล้วหรือยัง
+            const cartRes = await axios.get("http://localhost:8080/cart/list");
+            const existingItem = cartRes.data?.cartItems?.find(
+                (i) => i.productId === product.productId
             );
+            if (existingItem) {
+                showMessageAdjust("This item is already in your cart.", "info");
+                return;
+            }
+
+            // ✅ ถ้ายังไม่มี → เพิ่มสินค้าใหม่
+            const res = await axios.post("http://localhost:8080/cart/addItems", payload);
 
             if (res.status === 200 || res.status === 201) {
-                showMessagePermission(
-                    `✅ Added ${quantity}x ${product.productName} to cart (Total: $${lineTotal})`
+                showMessageSuccess(
+                    `"${product.productName}" added to your cart successfully!`
                 );
+
+                // ✅ แจ้ง Header ให้นับจำนวนตะกร้าใหม่
+                window.dispatchEvent(new Event("cartUpdated"));
             } else {
                 showMessageError("Failed to add to cart.");
             }

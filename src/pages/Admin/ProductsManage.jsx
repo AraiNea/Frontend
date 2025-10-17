@@ -209,14 +209,14 @@ function ProductsManage() {
             "Are you sure to save this product?"
         );
         if (!confirm.isConfirmed) return;
-
         try {
+            console.log("Saving product with username:", username);
             const productData = {
                 productId: form.productId || null,
                 productName: form.productName,
                 productPrice: form.productPrice,
                 productDetail: form.productDetail,
-                productStock: form.productStock,
+                productStock: form.productStock,    
                 categoryId: form.categoryId,
                 createdBy: username || "system",
                 updatedBy: username || "system",

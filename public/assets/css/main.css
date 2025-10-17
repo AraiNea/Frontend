@@ -13106,3 +13106,181 @@ footer {
   max-height: 80vh;
   overflow-y: auto;
 }
+
+
+/* ============================
+    Cart Page Styles
+   ============================ */
+/* ✅ Layout ทั้งหน้า Cart */
+.cart-container {
+  max-width: 800px;
+}
+
+/* ✅ หัวข้อ */
+.cart-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+}
+
+/* ✅ แถวสินค้า */
+.cart-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 15px 0;
+}
+
+/* ✅ ซ้าย (ภาพ + ชื่อสินค้า) */
+.cart-item-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-item-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cart-item-qty {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* ✅ ขวา (ราคา + ปุ่มเพิ่ม/ลด/ลบ) */
+.cart-item-right {
+  text-align: right;
+}
+
+.cart-item-price {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cart-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.cart-icon:hover {
+  color: #e53935;
+}
+
+/* ✅ สรุปด้านล่าง */
+.cart-summary {
+  border-top: 2px solid #ddd;
+  padding-top: 20px;
+}
+
+.cart-total {
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.cart-delivery {
+  color: #FB8C00;
+  font-weight: 500;
+}
+
+/* ✅ ปุ่ม checkout */
+.cart-checkout-btn {
+  background-color: #e53935;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 6px 18px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.cart-checkout-btn:hover {
+  background-color: #c62828;
+}
+
+
+/* ============================
+  Update Address Page Styles
+   ============================ */
+.address-form-container {
+  max-width: 480px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: 2rem 2.5rem;
+  margin: 3rem auto;
+}
+
+.address-form-container h4 {
+  text-align: center;
+  color: #e53935;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* ======= ช่อง input ======= */
+.address-form-container .form-label {
+  font-weight: 600;
+  color: #444;
+}
+
+.address-form-container .form-control {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 0.6rem 0.9rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.address-form-container .form-control:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 0.15rem rgba(229, 57, 53, 0.25);
+}
+
+/* ======= ปุ่ม Check out ======= */
+.btn-checkout {
+  width: 100%;
+  background-color: #e53935 !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem;
+  font-weight: 600;
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-checkout:hover {
+  background-color: #d32f2f !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(229, 57, 53, 0.3);
+}
+
+/* ======= Responsive ======= */
+@media (max-width: 576px) {
+  .address-form-container {
+    padding: 1.5rem;
+  }
+
+  .address-form-container h4 {
+    font-size: 1.25rem;
+  }
+}

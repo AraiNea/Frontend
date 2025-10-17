@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import useMessage from "../components/useMessage";
 
@@ -7,15 +7,31 @@ axios.defaults.withCredentials = true; // ✅ ส่ง cookie ทุก request
 
 const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { showMessageError, showMessageSuccess } = useMessage();
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(
-        localStorage.getItem("isLoggedIn") === "true" // ✅ ดึงสถานะจาก localStorage ตอนโหลด
-    );
+    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
     const [username, setUsername] = useState(localStorage.getItem("username") || "");
+    const [cartCount, setCartCount] = useState(0);
 
-    // ✅ ตรวจสอบสถานะ login จาก backend (ยืนยันความถูกต้องของ cookie)
+    // ✅ ดึงข้อมูล cart
+    const fetchCartCount = async () => {
+        try {
+            const res = await axios.get("http://localhost:8080/cart/list");
+            if (res.data?.cartItems || res.data?.items) {
+                const items = res.data.cartItems || res.data.items;
+                const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
+                setCartCount(totalItems);
+            } else {
+                setCartCount(0);
+            }
+        } catch (err) {
+            console.error("Failed to load cart:", err);
+        }
+    };
+
+    // ✅ ตรวจสอบสถานะ login จาก backend
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
@@ -26,35 +42,54 @@ const Header = () => {
                     setUsername(res.data.username);
                     localStorage.setItem("isLoggedIn", "true");
                     localStorage.setItem("username", res.data.username);
+                    fetchCartCount();
                 } else {
                     setIsLoggedIn(false);
+                    setCartCount(0);
                     localStorage.removeItem("isLoggedIn");
                     localStorage.removeItem("username");
                 }
             } catch (err) {
-                // ✅ ถ้าแค่ยังไม่ล็อกอิน (401) — ไม่ต้องโชว์ alert
-                if (err.response?.status !== 401) {
-                    console.error("Login check failed:", err);
-                    showMessageError(err);
-                }
+                if (err.response?.status !== 401) showMessageError(err);
                 setIsLoggedIn(false);
+                setCartCount(0);
                 localStorage.removeItem("isLoggedIn");
                 localStorage.removeItem("username");
             }
         };
 
         checkLoginStatus();
+
+        // ✅ อัปเดตชื่อเมื่อ profile เปลี่ยน
         const handleProfileUpdate = () => {
             const updatedUsername = localStorage.getItem("username");
-            if (updatedUsername) {
-                setUsername(updatedUsername);
-            }
+            if (updatedUsername) setUsername(updatedUsername);
         };
         window.addEventListener("profileUpdated", handleProfileUpdate);
 
-        return () => window.removeEventListener("profileUpdated", handleProfileUpdate);
+        // ✅ อัปเดตจำนวน cart เมื่อมีสินค้าเพิ่ม/ลบ
+        const handleCartUpdate = () => fetchCartCount();
+        window.addEventListener("cartUpdated", handleCartUpdate);
+
+        return () => {
+            window.removeEventListener("profileUpdated", handleProfileUpdate);
+            window.removeEventListener("cartUpdated", handleCartUpdate);
+        };
     }, []);
 
+    // ✅ ไปหน้า cart
+    const handleCartClick = (e) => {
+        e.preventDefault();
+        navigate("/cart");
+    };
+
+    // ✅ ไปหน้า track order
+    const handleTrackOrderClick = (e) => {
+        e.preventDefault();
+        navigate("/trackorder");
+    };
+
+    // ✅ ค้นหา
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim() !== "") {
@@ -62,15 +97,14 @@ const Header = () => {
         }
     };
 
-    const handleLogin = () => {
-        navigate("/login");
-    };
-
+    // ✅ เข้าสู่ระบบ / ออกจากระบบ
+    const handleLogin = () => navigate("/login");
     const handleLogout = async () => {
         try {
             await axios.get("http://localhost:8080/profile/logout");
             setIsLoggedIn(false);
             setUsername("");
+            setCartCount(0);
             localStorage.removeItem("isLoggedIn");
             localStorage.removeItem("username");
             showMessageSuccess("Logout successful");
@@ -79,6 +113,10 @@ const Header = () => {
             showMessageError(e);
         }
     };
+
+    // ✅ ตรวจหน้า active เพื่อเปลี่ยนสี
+    const isCartActive = location.pathname === "/cart";
+    const isTrackOrderActive = location.pathname === "/trackorder";
 
     return (
         <header id="header" className="header position-relative">
@@ -136,18 +174,54 @@ const Header = () => {
                         <div className="header-actions d-flex align-items-center justify-content-end">
                             {isLoggedIn && (
                                 <>
-                                    <a href="#" className="header-action-btn me-3">
-                                        <i className="bi bi-cart3"></i>
-                                        <span className="d-none d-md-inline-block">Cart</span>
-                                        <span className="badge bg-danger">3</span>
-                                    </a>
-                                    <a href="#" className="header-action-btn me-3">
-                                        <i className="bi bi-truck"></i>
-                                        <span className="d-none d-md-inline-block">Track Order</span>
-                                    </a>
+                                    {/* 🛒 Cart */}
+                                    <button
+                                        onClick={handleCartClick}
+                                        className="header-action-btn me-3 btn bg-transparent border-0 position-relative"
+                                        style={{
+                                            color: isCartActive ? "#e53935" : "#000",
+                                        }}
+                                    >
+                                        <i className={`bi ${isCartActive ? "bi-cart-fill" : "bi-cart3"}`}></i>
+                                        <span
+                                            className="d-none d-md-inline-block ms-1"
+                                            style={{ color: isCartActive ? "#e53935" : "#000" }}
+                                        >
+                                            Cart
+                                        </span>
+                                        {cartCount > 0 && (
+                                            <span
+                                                className="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                                                style={{
+                                                    fontSize: "0.7rem",
+                                                    borderRadius: "50%",
+                                                }}
+                                            >
+                                                {cartCount}
+                                            </span>
+                                        )}
+                                    </button>
+
+                                    {/* 🚚 Track Order */}
+                                    <button
+                                        onClick={handleTrackOrderClick}
+                                        className="header-action-btn me-3 btn bg-transparent border-0"
+                                        style={{
+                                            color: isTrackOrderActive ? "#e53935" : "#000",
+                                        }}
+                                    >
+                                        <i className={`bi ${isTrackOrderActive ? "bi-truck-front-fill" : "bi-truck"}`}></i>
+                                        <span
+                                            className="d-none d-md-inline-block ms-1"
+                                            style={{ color: isTrackOrderActive ? "#e53935" : "#000" }}
+                                        >
+                                            Track Order
+                                        </span>
+                                    </button>
                                 </>
                             )}
 
+                            {/* 👤 Profile */}
                             <div className="dropdown">
                                 <button className="header-action-btn" data-bs-toggle="dropdown">
                                     <i className="bi bi-person"></i>
@@ -170,13 +244,11 @@ const Header = () => {
                                             </li>
                                         </>
                                     ) : (
-                                        <>
-                                            <li>
-                                                <button className="dropdown-item" onClick={handleLogin}>
-                                                    Log In
-                                                </button>
-                                            </li>
-                                        </>
+                                        <li>
+                                            <button className="dropdown-item" onClick={handleLogin}>
+                                                Log In
+                                            </button>
+                                        </li>
                                     )}
                                 </ul>
                             </div>
@@ -185,6 +257,7 @@ const Header = () => {
                 </div>
             </div>
 
+            {/* Mobile Search */}
             <div id="mobileSearch" className="d-lg-none">
                 <div className="container-fluid container-xl">
                     <form className="search-form" onSubmit={handleSearch}>
