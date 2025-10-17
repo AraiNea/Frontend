@@ -140,7 +140,7 @@ const Header = () => {
                         <ul className="d-flex gap-4 list-unstyled mb-0">
                             <li>
                                 <NavLink
-                                    to="/ProductsManagement"
+                                    to="/productsManagement"
                                     className="nav-link"
                                     style={({ isActive }) => ({
                                         color: isActive ? "#e53935" : "#000",
@@ -151,7 +151,7 @@ const Header = () => {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/CategoryManagement"
+                                    to="/categoryManagement"
                                     className="nav-link"
                                     style={({ isActive }) => ({
                                         color: isActive ? "#e53935" : "#000",
@@ -162,7 +162,7 @@ const Header = () => {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/OrderManagement"
+                                    to="/orderManagement"
                                     className="nav-link"
                                     style={({ isActive }) => ({
                                         color: isActive ? "#e53935" : "#000",

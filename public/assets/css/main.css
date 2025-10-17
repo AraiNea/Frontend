@@ -13655,3 +13655,41 @@ footer {
         margin-bottom: 30px;
     }
 }
+
+/* ============================
+  Order Management Styles
+   ============================= */
+.status-dropdown {
+  border: none;
+  border-radius: 12px;
+  padding: 5px 30px 5px 12px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: 0.2s;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+.status-pending {
+  background-color: #ffe9b3;
+  color: #c78a00;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c78a00' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+}
+
+.status-fulfilled {
+  background-color: #c7f9cc;
+  color: #1b6b28;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231b6b28' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+}
+
+.status-dropdown:hover {
+  opacity: 0.85;
+}
+
+.status-dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffb34740;
+}
