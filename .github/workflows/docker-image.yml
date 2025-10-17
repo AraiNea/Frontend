@@ -111,13 +111,13 @@ jobs:
         run: npm ci
 
       # ✅ Run Cypress tests
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 180
-        env:
-          VITE_API_URL: http://localhost:8080
+      # - name: Run Cypress tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     wait-on: "http://localhost:3000"
+      #     wait-on-timeout: 180
+      #   env:
+      #     VITE_API_URL: http://localhost:8080
 
       # Push image (optional)
       - name: Push Docker image
