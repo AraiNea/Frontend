@@ -13284,3 +13284,374 @@ footer {
     font-size: 1.25rem;
   }
 }
+
+/* ============================
+  Track order Styles
+   ============================ */
+/* ====== TrackOrder Page Styles ====== */
+.trackorder-container {
+    padding: 40px 10%;
+    min-height: 70vh;
+    background-color: #fff;
+}
+
+.trackorder-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #c00;
+    margin-bottom: 20px;
+}
+
+.trackorder-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.trackorder-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+}
+
+.trackorder-left {
+    width: 20%;
+    text-align: left;
+}
+
+.trackorder-orderid {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #222;
+}
+
+.trackorder-date {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.trackorder-middle {
+    width: 60%;
+}
+
+.trackorder-middle ul {
+    list-style-type: disc;
+    margin: 0;
+    padding-left: 20px;
+}
+
+.trackorder-middle li {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 2px 0;
+}
+
+.trackorder-middle li span {
+    margin-left: 10px;
+    color: #555;
+}
+
+.trackorder-right {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.trackorder-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.trackorder-status::before {
+    content: "●";
+    font-size: 0.7rem;
+}
+
+.trackorder-status.fulfilled::before {
+    color: #00b300;
+}
+
+.trackorder-status.pending::before {
+    color: #f7c948;
+}
+
+.trackorder-arrow {
+    font-size: 1.5rem;
+    color: #d33;
+    transition: transform 0.2s;
+}
+
+.trackorder-arrow:hover {
+    transform: translateX(3px);
+}
+
+/* ============================
+  Order Detail Styles
+   ============================ */
+/* ====== Order Detail Page ====== */
+/* ───── Container ───── */
+.orderdetail-container {
+    padding: 40px 10%;
+    background-color: #fff;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ───── Title ───── */
+.orderdetail-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #d52121;
+    margin: 40px 0 30px 0;
+    text-align: center;
+}
+
+/* ───── Truck + Progress Container ───── */
+.orderdetail-progress {
+    position: relative;
+    width: 600px;
+    max-width: 90%;
+    margin-bottom: 80px;
+}
+
+/* Truck icon centered above the line */
+.orderdetail-truck {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.truck-icon {
+    font-size: 3.5rem;
+    color: #d33;
+    transition: transform 2s ease;
+    display: inline-block;
+}
+
+.truck-icon.idle {
+    opacity: 0.9;
+}
+
+.truck-icon.move {
+    animation: drive 2s ease-in-out forwards;
+    color: #28a745;
+}
+
+@keyframes drive {
+    0% {
+        transform: translateX(-150px);
+    }
+    100% {
+        transform: translateX(150px);
+    }
+}
+
+/* Progress line container */
+.orderdetail-line {
+    height: 6px;
+    background-color: #ddd;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.orderdetail-line-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    transition: width 1.5s ease;
+}
+
+.orderdetail-line-fill.pending {
+    background-color: #f7c948;
+    animation: shippingMove 2s ease-in-out infinite alternate;
+}
+
+.orderdetail-line-fill.fulfilled {
+    background-color: #28a745;
+    width: 100%;
+}
+
+@keyframes shippingMove {
+    from {
+        width: 30%;
+    }
+    to {
+        width: 70%;
+    }
+}
+
+/* Status labels under the line */
+.orderdetail-status-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.orderdetail-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-pending {
+    background-color: #f7c948;
+}
+
+.dot-fulfilled {
+    background-color: #bbb;
+}
+
+/* ───── Order Info & Items ───── */
+.orderdetail-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 30px;
+    gap: 40px;
+}
+
+/* Table of items - Left side */
+.orderdetail-items {
+    flex: 2;
+    min-width: 300px;
+}
+
+.orderdetail-subtitle {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.orderdetail-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.orderdetail-table th,
+.orderdetail-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+}
+
+.orderdetail-table th {
+    border-bottom: 2px solid #000;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.orderdetail-table td {
+    font-size: 1rem;
+}
+
+.orderdetail-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Info summary on the right */
+.orderdetail-info {
+    flex: 1;
+    min-width: 280px;
+}
+
+.order-summary-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    background-color: #fff;
+}
+
+.order-summary-card p {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+.order-summary-card p span {
+    color: #666;
+}
+
+.order-summary-card p strong {
+    color: #000;
+}
+
+.grand-total {
+    border-top: 1px solid #ddd;
+    margin-top: 16px;
+    padding-top: 16px;
+}
+
+.grand-total p {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.grand-total .total-amount {
+    color: #d52121;
+    font-size: 1.3rem;
+}
+
+/* ───── Loading / Empty ───── */
+.orderdetail-empty {
+    margin-top: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+/* ───── Responsive ───── */
+@media (max-width: 768px) {
+    .orderdetail-container {
+        padding: 20px;
+    }
+
+    .orderdetail-title {
+        font-size: 2rem;
+    }
+
+    .orderdetail-progress {
+        width: 100%;
+    }
+
+    .orderdetail-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .orderdetail-items {
+        order: 2;
+    }
+
+    .orderdetail-info {
+        order: 1;
+        margin-bottom: 30px;
+    }
+}

@@ -13,6 +13,8 @@ import Profile from "./pages/Profile.jsx";
 import AdminProfile from "./pages/Admin/AdminProfile.jsx";
 import Cart from "./pages/Cart.jsx";
 import UpdateAddress from "./pages/Address.jsx";
+import TrackOrder from "./pages/TrackOrder.jsx";
+import OrderDetail from "./pages/OrderDetail.jsx";
 
 createRoot(document.getElementById('root')).render(
   <Router>
@@ -31,6 +33,8 @@ createRoot(document.getElementById('root')).render(
       <Route path="/profile" element={<Profile />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/updateAddress" element={<UpdateAddress />} />
+      <Route path="/trackOrder" element={<TrackOrder />} />
+      <Route path="/orderDetail/:orderId" element={<OrderDetail />} />
 
       {/* adminInfo needed */}
       <Route path="/ProductsManagement" element={<ProductsManage />} />
