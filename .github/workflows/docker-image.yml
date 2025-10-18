@@ -30,7 +30,7 @@ jobs:
       DB_USERNAME: pizzauser
       DB_PASSWORD: pizzapass
       JWT_SECRET: mysupersecuresecretthatatleast32characterslong
-      VITE_API_URL: http://arainea-backend:8080
+      VITE_API_URL: http://arainea-backend.arainea.svc.cluster.local:8080
 
     steps:
       - uses: actions/checkout@v4
