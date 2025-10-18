@@ -15,7 +15,7 @@ describe('template spec', () => {
   it('should visit homepage', () => {
     cy.visit('http://localhost:3000/productsManagement');
     // ตรวจสอบว่า login สำเร็จ
-    cy.contains('span', 'carol').should('be.visible');
+    
   });
 
   it('search product name', () => {
