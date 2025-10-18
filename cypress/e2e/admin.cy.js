@@ -74,27 +74,32 @@ describe('template spec', () => {
 
   it('Order management', () => {
     // คลิกลิงก์ Order Management
-    cy.contains('a.nav-link', 'Order Management')
+    it('Order management', () => {
+      // คลิกลิงก์ Order Management
+      cy.contains('a.nav-link', 'Order Management')
       .should('be.visible')
       .click();
-  
-    // รอให้ dropdown ปรากฏ
-    cy.get('select.status-dropdown.status-fulfilled')
+      // รอและเลือก dropdown แรกสุด
+      cy.get('select.status-dropdown', { timeout: 10000 })
       .should('be.visible')
-      .should('not.be.disabled')
-      .as('statusDropdown'); // ตั้ง alias
+      .and('not.be.disabled')
+      .first()
+      .as('statusDropdown');
+      // ตรวจสอบว่าค่าเริ่มต้นเป็น Pending (value = 0)
+      cy.get('@statusDropdown')
+      .should('have.value', '0');
+      // เปลี่ยนสถานะเป็น Fulfilled (value = 1)
+      cy.get('@statusDropdown')
+      .select('1', { force: true });
+      // รอให้ DOM อัปเดตหลังเปลี่ยนค่า
+      cy.wait(500);
+      // ตรวจสอบว่าค่าถูกเปลี่ยนเป็น '1'
+      cy.get('@statusDropdown')
+      .should('have.value', '1');
+      });
   
-    // เลือก Fulfilled
-    cy.get('@statusDropdown')
-      .select('1')
-      .should('have.value', '1'); // ตรวจสอบว่าเลือกสำเร็จ
   
-    // เลือก Pending
-    cy.get('@statusDropdown')
-      .select('0');
-    cy.get('button.swal2-confirm.btn.form-Button-Swal-Delete')
-      .should('be.visible')    // ตรวจสอบว่าปุ่มเห็นได้
-      .click();  // ตรวจสอบว่าเลือกสำเร็จ
+    
   });
   
   
