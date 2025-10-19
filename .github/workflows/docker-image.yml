@@ -146,26 +146,27 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-      - name: Wait for deployed site to be ready
+        
+      - name: Wait for frontend to be ready
         run: |
-          echo "⏳ Waiting for site to be ready..."
+          echo "⏳ Waiting for frontend to start..."
           for i in {1..30}; do
-            if curl -sSf ${{ secrets.PRODUCTION_URL }} >/dev/null; then
-              echo "✅ Site is reachable!"
+            if curl -sSf http://localhost:3000 >/dev/null; then
+              echo "✅ Frontend is ready!"
               exit 0
             fi
             echo "⌛ Waiting ($i/30)..."
             sleep 5
           done
-          echo "❌ Site not reachable!"
+          echo "❌ Frontend did not start in time"
+          docker logs frontend || true
           exit 1
 
-      # ✅ รัน Cypress test หลังจาก deploy เสร็จ
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          wait-on: http://localhost:3000
+          wait-on: "http://localhost:3000"
           wait-on-timeout: 180
         env:
           VITE_API_URL: http://localhost:8080
