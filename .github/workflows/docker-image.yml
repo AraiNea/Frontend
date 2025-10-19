@@ -142,7 +142,7 @@ jobs:
          node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
     # ✅ Port-forward frontend จาก K8s -> localhost
       - name: Port forward frontend service
