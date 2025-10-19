@@ -131,7 +131,7 @@ jobs:
           kubectl apply -f deployment/k8s/
 #เพิ่ม
   cypress-test:
-    name: Run Cypress Tests (after deploy)
+    name: Run Cypress Tests 
     needs: deploy
     runs-on: ubuntu-latest
 
@@ -164,8 +164,12 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          wait-on: ${{ secrets.PRODUCTION_URL }}
-          wait-on-timeout: 180
           browser: chrome
+          wait-on: http://localhost:3000
+          wait-on-timeout: 180
         env:
-          VITE_API_URL: ${{ secrets.PRODUCTION_URL }}
+          VITE_API_URL: http://localhost:8080
+
+      - name: Show frontend logs if test fails
+        if: failure()
+        run: docker logs frontend
