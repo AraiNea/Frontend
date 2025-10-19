@@ -135,27 +135,25 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-    # ✅ ติดตั้ง Node.js สำหรับ Cypress
+      - uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-         node-version: 20
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
 
-    # ✅ Port-forward frontend จาก K8s -> localhost
       - name: Port forward frontend service
         run: |
-         nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
-         sleep 10
+          nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
+          sleep 10
 
-    # ✅ รัน Cypress หลังจากเว็บพร้อมแล้ว
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-         wait-on: "http://localhost:3000"
-         wait-on-timeout: 180
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 180
         env:
-         VITE_API_URL: http://localhost:8080
-
+          VITE_API_URL: http://localhost:8080
