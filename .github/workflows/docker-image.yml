@@ -132,7 +132,7 @@ jobs:
         
 #เพิ่ม
   cypress:
-    needs: build
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
     # ✅ ติดตั้ง Node.js สำหรับ Cypress
