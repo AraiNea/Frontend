@@ -172,4 +172,4 @@ jobs:
 
       - name: Show frontend logs if test fails
         if: failure()
-        run: docker logs frontend
+        run: docker logs frontend || true
