@@ -145,14 +145,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-    # Port-forward frontend จาก K8s → localhost
+    # ✅ รอ frontend pod ready ก่อน port-forward
+      - name: Wait for frontend pod to be ready
+        run: |
+          kubectl wait --for=condition=Ready pod -l app=frontend -n arainea --timeout=180s
+
+    # ✅ Port-forward frontend service
       - name: Port forward frontend service
         run: |
           nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
-          sleep 30  # เพิ่มเวลาให้ frontend พร้อม
+          sleep 10
 
-    # รอ frontend พร้อมจริง ๆ ก่อน run Cypress
-      - name: Wait for frontend to be ready
+    # ✅ รอ frontend พร้อมจริง ๆ
+      - name: Wait for frontend service
         run: |
           for i in {1..30}; do
             if curl -s http://localhost:3000 >/dev/null; then
@@ -165,6 +170,7 @@ jobs:
           echo "Frontend failed to start"
           exit 1
 
+    # ✅ รัน Cypress tests
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
