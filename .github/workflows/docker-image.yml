@@ -132,7 +132,7 @@ jobs:
         
 #เพิ่ม
   cypress:
-    needs: deploy
+    needs: deploy   # รอ deploy เสร็จก่อน
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -145,10 +145,25 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+    # Port-forward frontend จาก K8s → localhost
       - name: Port forward frontend service
         run: |
           nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
-          sleep 10
+          sleep 30  # เพิ่มเวลาให้ frontend พร้อม
+
+    # รอ frontend พร้อมจริง ๆ ก่อน run Cypress
+      - name: Wait for frontend to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:3000 >/dev/null; then
+              echo "Frontend ready!"
+              exit 0
+            fi
+            echo "Waiting for frontend ($i/30)..."
+            sleep 5
+          done
+          echo "Frontend failed to start"
+          exit 1
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
