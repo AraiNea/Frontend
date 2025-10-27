@@ -1,9 +1,8 @@
 // src/pages/SearchPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
 import Header from "../components/Header.jsx";
-import CatalogGrid from "../components/Card.jsx"; // ใช้ CatalogGrid
+import CatalogGrid from "../components/Card.jsx";
 
 const SearchPage = () => {
   const [data, setData] = useState({ results: [] });
@@ -35,11 +34,10 @@ const SearchPage = () => {
             p.isActive === 1
         );
 
-        if (priceMin) filtered = filtered.filter(p => p.productPrice >= Number(priceMin));
-        if (priceMax) filtered = filtered.filter(p => p.productPrice <= Number(priceMax));
-        if (inStock) filtered = filtered.filter(p => p.productStock > 0);
+        if (priceMin) filtered = filtered.filter((p) => p.productPrice >= Number(priceMin));
+        if (priceMax) filtered = filtered.filter((p) => p.productPrice <= Number(priceMax));
+        if (inStock) filtered = filtered.filter((p) => p.stock > 0);
 
-        // group by category และเพิ่ม stock
         const grouped = {};
         filtered.forEach((p) => {
           if (!grouped[p.categoryId]) {
@@ -57,7 +55,6 @@ const SearchPage = () => {
             productDetail: p.productDetail,
             productPrice: p.productPrice,
             productImgPath: p.productImgPath || "/images/placeholder.png",
-            productStock: p.productStock, // ✅ เพิ่ม stock
           });
         });
 
@@ -83,65 +80,74 @@ const SearchPage = () => {
     <div className="app-layout">
       <Header />
       <main className="main-content container my-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-semibold">Search Results</h1>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h1 className="fs-4 fw-semibold">Search Results</h1>
 
-          {/* Funnel filter toggle */}
+          {/* 🔽 Filter toggle */}
           <button
             onClick={() => setShowFilter(!showFilter)}
-            className="p-2 bg-gray-200 rounded hover:bg-gray-300 flex items-center gap-2"
+            className="btn btn-light d-flex align-items-center gap-2"
           >
-            <FaFilter className="text-gray-700" />
+            <i className="bi bi-funnel-fill text-secondary"></i>
             <span>Filter</span>
           </button>
         </div>
 
-        {/* Filter dropdown */}
+        {/* 🎛 Filter dropdown */}
         {showFilter && (
-          <div className="border rounded-lg p-4 mb-4 bg-white shadow-md">
+          <div className="border rounded-3 p-4 mb-4 bg-white shadow-sm">
             <div className="mb-3">
-              <label className="block font-semibold mb-1">Price</label>
-              <div className="flex items-center gap-2">
+              <label className="fw-semibold mb-1 d-block">Price</label>
+              <div className="d-flex align-items-center gap-2">
                 <input
                   type="number"
                   placeholder="Min"
                   value={priceMin}
                   onChange={(e) => setPriceMin(e.target.value)}
-                  className="border px-2 py-1 rounded w-24"
+                  className="form-control w-auto"
+                  style={{ width: "100px" }}
                 />
-                <span style={{ margin: "0 5px", color: "#FF4500", fontWeight: "bold" }}>-</span>
+                <span>-</span>
                 <input
                   type="number"
                   placeholder="Max"
                   value={priceMax}
                   onChange={(e) => setPriceMax(e.target.value)}
-                  className="border px-2 py-1 rounded w-24"
+                  className="form-control w-auto"
+                  style={{ width: "100px" }}
                 />
               </div>
             </div>
 
-            <div className="mb-3">
-              <label className="flex items-center gap-4">
-                <input
-                  type="checkbox"
-                  checked={inStock}
-                  onChange={() => setInStock(!inStock)}
-                />
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={inStock}
+                onChange={() => setInStock(!inStock)}
+                id="inStockCheck"
+              />
+              <label className="form-check-label" htmlFor="inStockCheck">
                 Stock available
               </label>
             </div>
 
-            <div className="flex gap-10">
+            {/* ปุ่ม Clear / Search มีระยะห่างแน่ ๆ */}
+            <div className="d-flex gap-3">
               <button
                 onClick={clearFilter}
-                className="border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-50"
+                className="btn border border-danger text-danger"
               >
                 Clear
               </button>
+
               <button
                 onClick={() => setShowFilter(false)}
-                className="text-white px-4 py-2 rounded"
-                style={{ backgroundColor: '#FF4500', border: '1px solid #FF4500' }}
+                className="btn text-white"
+                style={{
+                  backgroundColor: "#FF4500",
+                  borderColor: "#FF4500",
+                }}
               >
                 Search
               </button>
@@ -153,7 +159,7 @@ const SearchPage = () => {
           <p className="text-muted">กำลังโหลด...</p>
         ) : data.results.length > 0 ? (
           <CatalogGrid
-            data={data} // ✅ CatalogGrid จะใช้ productStock
+            data={data}
             onProductClick={(id) => navigate(`/product/${id}`)}
           />
         ) : (
