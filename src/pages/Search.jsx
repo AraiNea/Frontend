@@ -36,7 +36,7 @@ const SearchPage = () => {
 
         if (priceMin) filtered = filtered.filter((p) => p.productPrice >= Number(priceMin));
         if (priceMax) filtered = filtered.filter((p) => p.productPrice <= Number(priceMax));
-        if (inStock) filtered = filtered.filter((p) => p.stock > 0);
+        if (inStock) filtered = filtered.filter((p) => p.productStock > 0);
 
         const grouped = {};
         filtered.forEach((p) => {
