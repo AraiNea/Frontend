@@ -20,7 +20,7 @@ const SearchPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8080/product/list`);
+        const res = await fetch(`http://localhost:8080/product/list?query=${encodeURIComponent(searchQuery)}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const products = await res.json();
 
@@ -54,6 +54,7 @@ const SearchPage = () => {
             productName: p.productName,
             productDetail: p.productDetail,
             productPrice: p.productPrice,
+            productStock: p.productStock,
             productImgPath: p.productImgPath || "/images/placeholder.png",
           });
         });
