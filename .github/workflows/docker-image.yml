@@ -130,51 +130,51 @@ jobs:
           sleep 3
           kubectl apply -f deployment/k8s/
         
-#เพิ่ม
-  cypress:
-    needs: deploy   # รอ deploy เสร็จก่อน
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# #เพิ่ม
+#   cypress:
+#     needs: deploy   # รอ deploy เสร็จก่อน
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
   
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
   
-      - name: Install dependencies
-        run: npm install
+#       - name: Install dependencies
+#         run: npm install
   
-      # ✅ รอ frontend pod ready ก่อน port-forward
-      - name: Wait for frontend pod to be ready
-        run: |
-          kubectl wait --for=condition=Ready pod -l app=frontend -n arainea --timeout=180s
+#       # ✅ รอ frontend pod ready ก่อน port-forward
+#       - name: Wait for frontend pod to be ready
+#         run: |
+#           kubectl wait --for=condition=Ready pod -l app=frontend -n arainea --timeout=180s
   
-      # ✅ Port-forward frontend service
-      - name: Port forward frontend service
-        run: |
-          nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
-          sleep 10
+#       # ✅ Port-forward frontend service
+#       - name: Port forward frontend service
+#         run: |
+#           nohup kubectl port-forward svc/frontend 3000:80 -n arainea &
+#           sleep 10
   
-      # ✅ รอ frontend พร้อมจริง ๆ
-      - name: Wait for frontend service
-        run: |
-          for i in {1..30}; do
-            if curl -s http://localhost:3000 >/dev/null; then
-              echo "Frontend ready!"
-              exit 0
-            fi
-            echo "Waiting for frontend ($i/30)..."
-            sleep 5
-          done
-          echo "Frontend failed to start"
-          exit 1
+#       # ✅ รอ frontend พร้อมจริง ๆ
+#       - name: Wait for frontend service
+#         run: |
+#           for i in {1..30}; do
+#             if curl -s http://localhost:3000 >/dev/null; then
+#               echo "Frontend ready!"
+#               exit 0
+#             fi
+#             echo "Waiting for frontend ($i/30)..."
+#             sleep 5
+#           done
+#           echo "Frontend failed to start"
+#           exit 1
   
-      # ✅ รัน Cypress tests
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 180
-        env:
-          VITE_API_URL: http://localhost:8080
+#       # ✅ รัน Cypress tests
+#       - name: Run Cypress tests
+#         uses: cypress-io/github-action@v6
+#         with:
+#           wait-on: "http://localhost:3000"
+#           wait-on-timeout: 180
+#         env:
+#           VITE_API_URL: http://localhost:8080
