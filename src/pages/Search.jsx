@@ -20,7 +20,7 @@ const SearchPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8080/product/list?query=${encodeURIComponent(searchQuery)}`);
+        const res = await fetch(`http://localhost:8080/product/list?productName=${encodeURIComponent(searchQuery)}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const products = await res.json();
 
