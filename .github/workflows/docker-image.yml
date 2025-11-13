@@ -41,6 +41,9 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u cxgdn -p dckr_pat_NQDxIKYdnllF5XD5HRDypIEYy1U
 
+      - name: Push image
+        run: docker push cxgdn/arainea-frontend:latest
+
       # - name: Pull backend image
       #   run: docker pull docker.io/pattaratos/arainea-backend:latest
 
@@ -87,46 +90,40 @@ jobs:
       #     exit 1
 
       # ✅ รัน frontend container
-      - name: Run frontend
-        run: |
-          echo "🔍 Using same network as backend ($NET_ID)"
-          docker run -d --name frontend \
-            --network=$NET_ID \
-            -p 3000:3000 \
-            -e VITE_API_URL=${{ env.VITE_API_URL }} \
-            cxgdn/arainea-frontend:latest
+      # - name: Run frontend
+      #   run: |
+      #     echo "🔍 Using same network as backend ($NET_ID)"
+      #     docker run -d --name frontend \
+      #       --network=$NET_ID \
+      #       -p 3000:3000 \
+      #       -e VITE_API_URL=${{ env.VITE_API_URL }} \
+      #       cxgdn/arainea-frontend:latest
             
-      # แสดง log backend ถ้า fail
-      - name: Show backend logs
-        if: failure()
-        run: docker logs be
+      # # แสดง log backend ถ้า fail
+      # - name: Show backend logs
+      #   if: failure()
+      #   run: docker logs be
 
-      # Push image (optional)
-      - name: Push Docker image
-        run: docker push cxgdn/arainea-frontend:latest
+      # # Push image (optional)
+      # - name: Push Docker image
+      #   run: docker push cxgdn/arainea-frontend:latest
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     steps:
-      - name: Checkout Backend repo
-        uses: actions/checkout@v4
-  
       - name: Checkout Deployment repo
         uses: actions/checkout@v4
         with:
           repository: AraiNea/Deployment
-          token: ${{ secrets.GITHUB_TOKEN }}
           path: deployment
-  
+
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
-  
-      - name: Setup Minikube (optional)
-        uses: medyagh/setup-minikube@latest
-  
+
       - name: Apply manifests
         run: |
-          kubectl apply -f deployment/k8s/namespace.yaml || true
+          kubectl apply -f deployment/k8s/namespace.yaml
           sleep 3
           kubectl apply -f deployment/k8s/
         
