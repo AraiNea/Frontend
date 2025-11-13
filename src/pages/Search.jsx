@@ -1,11 +1,11 @@
-// src/pages/SearchPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import CatalogGrid from "../components/Card.jsx";
 
 const SearchPage = () => {
-  const [data, setData] = useState({ results: [] });
+  const [allProducts, setAllProducts] = useState([]); // สินค้าจาก backend
+  const [filteredProducts, setFilteredProducts] = useState([]); // สินค้าหลัง filter
   const [loading, setLoading] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [priceMin, setPriceMin] = useState("");
@@ -16,60 +16,73 @@ const SearchPage = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const searchQuery = queryParams.get("query") || "";
 
+  // 🔹 Fetch จาก backend โดยส่ง searchQuery
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8080/product/list?productName=${encodeURIComponent(searchQuery)}`);
+        const url = `http://localhost:8080/product/list?productName=${encodeURIComponent(searchQuery)}`;
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const products = await res.json();
+        const data = await res.json();
 
-        const allProducts = Array.isArray(products.products)
-          ? products.products
+        const products = Array.isArray(data.products)
+          ? data.products.filter((p) => Number(p.isActive) === 1)
           : [];
 
-        let filtered = allProducts.filter(
-          (p) =>
-            p.productName.toLowerCase().includes(searchQuery.toLowerCase()) &&
-            p.isActive === 1
-        );
-
-        if (priceMin) filtered = filtered.filter((p) => p.productPrice >= Number(priceMin));
-        if (priceMax) filtered = filtered.filter((p) => p.productPrice <= Number(priceMax));
-        if (inStock) filtered = filtered.filter((p) => p.productStock > 0);
-
-        const grouped = {};
-        filtered.forEach((p) => {
-          if (!grouped[p.categoryId]) {
-            grouped[p.categoryId] = {
-              category: {
-                categoryId: p.categoryId,
-                categoryName: p.categoryName || "Uncategorized",
-              },
-              products: [],
-            };
-          }
-          grouped[p.categoryId].products.push({
-            productId: p.productId,
-            productName: p.productName,
-            productDetail: p.productDetail,
-            productPrice: p.productPrice,
-            productStock: p.productStock,
-            productImgPath: p.productImgPath || "/images/placeholder.png",
-          });
-        });
-
-        setData({ results: Object.values(grouped) });
+        setAllProducts(products);          // เก็บทั้งหมด
       } catch (err) {
         console.error("Fetch error:", err);
-        setData({ results: [] });
+        setAllProducts([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [searchQuery, priceMin, priceMax, inStock]);
+  }, [searchQuery]);
+
+  // 🔹 Filter frontend (ราคา + stock)
+  useEffect(() => {
+    let filtered = [...allProducts];
+
+    if (priceMin)
+      filtered = filtered.filter(
+        (p) => Number(p.productPrice) >= Number(priceMin)
+      );
+    if (priceMax)
+      filtered = filtered.filter(
+        (p) => Number(p.productPrice) <= Number(priceMax)
+      );
+    if (inStock)
+      filtered = filtered.filter(
+        (p) => Number(p.productStock) > 0
+      );
+
+    // 🔹 group by category
+    const grouped = {};
+    filtered.forEach((p) => {
+      if (!grouped[p.categoryId]) {
+        grouped[p.categoryId] = {
+          category: {
+            categoryId: p.categoryId,
+            categoryName: p.categoryName || "Uncategorized",
+          },
+          products: [],
+        };
+      }
+      grouped[p.categoryId].products.push({
+        productId: p.productId,
+        productName: p.productName,
+        productDetail: p.productDetail,
+        productPrice: p.productPrice,
+        productStock: p.productStock,
+        productImgPath: p.productImgPath || "/images/placeholder.png",
+      });
+    });
+
+    setFilteredProducts(Object.values(grouped));
+  }, [allProducts, priceMin, priceMax, inStock]);
 
   const clearFilter = () => {
     setPriceMin("");
@@ -84,7 +97,6 @@ const SearchPage = () => {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h1 className="fs-4 fw-semibold">Search Results</h1>
 
-          {/* 🔽 Filter toggle */}
           <button
             onClick={() => setShowFilter(!showFilter)}
             className="btn btn-light d-flex align-items-center gap-2"
@@ -94,7 +106,6 @@ const SearchPage = () => {
           </button>
         </div>
 
-        {/* 🎛 Filter dropdown */}
         {showFilter && (
           <div className="border rounded-3 p-4 mb-4 bg-white shadow-sm">
             <div className="mb-3">
@@ -133,7 +144,6 @@ const SearchPage = () => {
               </label>
             </div>
 
-            {/* ปุ่ม Clear / Search มีระยะห่างแน่ ๆ */}
             <div className="d-flex gap-3">
               <button
                 onClick={clearFilter}
@@ -150,7 +160,7 @@ const SearchPage = () => {
                   borderColor: "#FF4500",
                 }}
               >
-                Search
+                Apply
               </button>
             </div>
           </div>
@@ -158,9 +168,9 @@ const SearchPage = () => {
 
         {loading ? (
           <p className="text-muted">กำลังโหลด...</p>
-        ) : data.results.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <CatalogGrid
-            data={data}
+            data={{ results: filteredProducts }}
             onProductClick={(id) => navigate(`/product/${id}`)}
           />
         ) : (
