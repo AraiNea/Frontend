@@ -3,6 +3,7 @@ import Adminheader from "../../components/AdminHeader";
 import Footer from "../../components/Footer";
 import useMessage from "../../components/useMessage";
 import axios from "axios";
+import PdfOrderSummary from "../../components/pdf/PdfOrderSummary";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common["Accept"] = "application/json";
@@ -93,6 +94,7 @@ function OrderManagement() {
                                 <th>Total Price</th>
                                 <th>Time</th>
                                 <th>Status</th>
+                                <th>Report</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,11 +108,10 @@ function OrderManagement() {
                                         <td>{o.createdAt}</td>
                                         <td>
                                             <select
-                                                className={`status-dropdown ${
-                                                    o.status === 0
+                                                className={`status-dropdown ${o.status === 0
                                                         ? "status-pending"
                                                         : "status-fulfilled"
-                                                }`}
+                                                    }`}
                                                 value={String(o.status)}
                                                 onChange={(e) =>
                                                     handleStatusChange(
@@ -122,6 +123,9 @@ function OrderManagement() {
                                                 <option value="0">Pending</option>
                                                 <option value="1">Fulfilled</option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <PdfOrderSummary data={item} />
                                         </td>
                                     </tr>
                                 );
