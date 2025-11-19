@@ -171,6 +171,17 @@ const Header = () => {
                                     Order Management
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink
+                                    to="/weeklyStockReport"
+                                    className="nav-link"
+                                    style={({ isActive }) => ({
+                                        color: isActive ? "#e53935" : "#000",
+                                    })}
+                                >
+                                    Weekly Stock Report
+                                </NavLink>
+                            </li>
                         </ul>
                     </nav>
                 </div>

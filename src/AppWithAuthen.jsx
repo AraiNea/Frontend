@@ -4,18 +4,19 @@ import axios from "axios";
 import UserContext from "./components/context/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// 🟩 Pages (User)
+// Pages (User)
 import Profile from "./pages/Profile.jsx";
 import Cart from "./pages/Cart.jsx";
 import UpdateAddress from "./pages/Address.jsx";
 import TrackOrder from "./pages/TrackOrder.jsx";
 import OrderDetail from "./pages/OrderDetail.jsx";
 
-// 🟥 Pages (Admin)
+// Pages (Admin)
 import ProductsManage from "./pages/Admin/ProductsManage.jsx";
 import AdminProfile from "./pages/Admin/AdminProfile.jsx";
 import CategoryManagement from "./pages/Admin/CategoryManage.jsx";
 import OrderManagement from "./pages/Admin/OrderManage.jsx";
+import WeeklyStockReport from "./pages/Admin/WeeklyStockReport.jsx";
 
 export default function AppWithAuth() {
     const [userInfo, setUserInfo] = useState(undefined);
@@ -125,6 +126,14 @@ export default function AppWithAuth() {
                     element={
                         <ProtectedRoute allowedRoles={[2]}>
                             <OrderManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/weeklyStockReport"
+                    element={
+                        <ProtectedRoute allowedRoles={[2]}>
+                            <WeeklyStockReport />
                         </ProtectedRoute>
                     }
                 />
