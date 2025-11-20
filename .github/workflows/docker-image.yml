@@ -48,69 +48,6 @@ jobs:
       - name: Push image
         run: docker push cxgdn/arainea-frontend:latest
 
-      # - name: Pull backend image
-      #   run: docker pull docker.io/pattaratos/arainea-backend:latest
-
-      # # 👇 Step นี้คือกุญแจสำคัญ (เชื่อม backend เข้ากับ network ของ postgres)
-      # - name: Run backend and connect to GitHub Actions service network
-      #   run: |
-      #     echo "🔍 Searching for GitHub Actions network..."
-      #     NET_ID=$(docker network ls --format '{{.Name}}' | grep github_ || true)
-
-      #     if [ -z "$NET_ID" ]; then
-      #       echo "⚠️ No GitHub Actions network found. Using default bridge network."
-      #       NET_ID=bridge
-      #     else
-      #       echo "✅ Found GitHub Actions network: $NET_ID"
-      #     fi
-
-      #     # ✅ Export NET_ID to environment for next steps
-      #     echo "NET_ID=$NET_ID" >> $GITHUB_ENV
-
-      #     docker run -d --name be \
-      #       --network=$NET_ID \
-      #       -p 8080:8080 \
-      #       -e SPRING_DATASOURCE_URL=${{ env.DB_URL }} \
-      #       -e SPRING_DATASOURCE_USERNAME=${{ env.DB_USERNAME }} \
-      #       -e SPRING_DATASOURCE_PASSWORD=${{ env.DB_PASSWORD }} \
-      #       -e APP_JWT_SECRET=${{ env.JWT_SECRET }} \
-      #       -e APP_JWT_EXPIRES_DAYS=30 \
-      #       pattaratos/arainea-backend:latest
-
-      # # ✅ รอ backend พร้อมก่อน (ใช้ /actuator/health หรือ /home)
-      # - name: Wait for backend to be ready
-      #   run: |
-      #     echo "⏳ Waiting for backend to start..."
-      #     for i in {1..30}; do
-      #       if curl -s http://localhost:8080/actuator/health >/dev/null; then
-      #         echo "✅ Backend is ready!"
-      #         exit 0
-      #       fi
-      #       echo "⌛ Waiting ($i/30)..."
-      #       sleep 5
-      #     done
-      #     echo "❌ Backend did not start in time"
-      #     docker logs be
-      #     exit 1
-
-      # ✅ รัน frontend container
-      # - name: Run frontend
-      #   run: |
-      #     echo "🔍 Using same network as backend ($NET_ID)"
-      #     docker run -d --name frontend \
-      #       --network=$NET_ID \
-      #       -p 3000:3000 \
-      #       -e VITE_API_URL=${{ env.VITE_API_URL }} \
-      #       cxgdn/arainea-frontend:latest
-            
-      # # แสดง log backend ถ้า fail
-      # - name: Show backend logs
-      #   if: failure()
-      #   run: docker logs be
-
-      # # Push image (optional)
-      # - name: Push Docker image
-      #   run: docker push cxgdn/arainea-frontend:latest
   deploy:
     needs: build
     runs-on: self-hosted
@@ -130,8 +67,7 @@ jobs:
           kubectl apply -f deployment/k8s/namespace.yaml
           sleep 3
           kubectl apply -f deployment/k8s/
-        
-# #เพิ่ม
+          
   cypress:
     needs: deploy
     runs-on: ubuntu-latest
