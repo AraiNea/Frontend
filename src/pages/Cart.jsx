@@ -9,14 +9,14 @@ axios.defaults.withCredentials = true;
 
 function Cart() {
     const navigate = useNavigate();
-    const { showMessageError, showMessageConfirmDelete, showMessageSuccess, showMessageAdjust } = useMessage();
-
+    const { showMessageError, showMessageConfirmDelete, showMessageSuccess, showMessageAdjust, showMessageNotSuccess } = useMessage();
     const [cartItems, setCartItems] = useState([]);
     const [subtotal, setSubtotal] = useState(0);
     const [deliveryFee, setDeliveryFee] = useState(300); // fixed delivery fee
     const [grandTotal, setGrandTotal] = useState(0);
+    const [discountCode, setDiscountCode] = useState(""); // สำหรับเก็บโค้ดที่กรอก
+    const [discount, setDiscount] = useState(0); // สำหรับเก็บมูลค่าของส่วนลด
 
-    // ✅ โหลดข้อมูลตะกร้า
     const fetchCart = async () => {
         try {
             const res = await axios.get("http://localhost:8080/cart/list");
@@ -36,21 +36,32 @@ function Cart() {
         }
     };
 
-    // ✅ คำนวณราคารวม
     const calculateTotal = (items) => {
         const sub = items.reduce((acc, item) => acc + item.productPrice * item.qty, 0);
         setSubtotal(sub);
-        setGrandTotal(sub + deliveryFee);
+
+        // คำนวณ grandTotal โดยหักส่วนลดออกจาก subtotal
+        const total = sub + deliveryFee - discount;
+        setGrandTotal(total); // อัปเดต grandTotal ทันที
     };
+
+
 
     useEffect(() => {
         fetchCart();
     }, []);
 
-    // ✅ เพิ่มจำนวนสินค้า
+    useEffect(() => {
+        if (discount > 0) {
+            // คำนวณยอดรวมใหม่ทุกครั้งที่ discount เปลี่ยน
+            calculateTotal(cartItems);
+        }
+    }, [discount, cartItems]);
+
+    // เพิ่มจำนวนสินค้า
     const handleIncrease = async (item) => {
         try {
-            // 🔹 1. ดึง stock ล่าสุดจาก backend
+            // ดึง stock ล่าสุดจาก backend
             const productRes = await axios.get(`http://localhost:8080/product/list?productId=${item.productId}`);
             const product = productRes.data?.products?.find((p) => p.productId === item.productId);
             const stock = product?.productStock ?? 0;
@@ -60,10 +71,10 @@ function Cart() {
                     `"${item.productName}" has only ${stock} in stock.`,
                     "info"
                 );
-                return; // ❌ หยุดการเพิ่มถ้าเกิน stock
+                return; // หยุดการเพิ่มถ้าเกิน stock
             }
 
-            // 🔹 2. อัปเดตจำนวน
+            // อัปเดตจำนวนสินค้า
             const newQty = item.qty + 1;
             const updatedLineTotal = item.productPrice * newQty;
 
@@ -80,7 +91,7 @@ function Cart() {
         }
     };
 
-    // ✅ ลดจำนวนสินค้า
+    // ลดจำนวนสินค้า
     const handleDecrease = async (item) => {
         if (item.qty > 1) {
             const newQty = item.qty - 1;
@@ -100,7 +111,7 @@ function Cart() {
         }
     };
 
-    // ✅ ลบสินค้า (เมื่อ qty เหลือ 1 แล้วกดถังขยะ)
+    // ลบสินค้า
     const handleDelete = async (cartItemId, productName) => {
         const result = await showMessageConfirmDelete(productName);
         if (!result.isConfirmed) return;
@@ -115,7 +126,48 @@ function Cart() {
         }
     };
 
-    // ✅ ปุ่ม checkout → ไปหน้าอัปเดตที่อยู่
+    // เช็คโค้ดส่วนลด
+    const handleApplyDiscount = async () => {
+        if (!discountCode) {
+            showMessageNotSuccess({ message: "Please enter a discount code." });
+            return;
+        }
+
+        try {
+            const response = await axios.get(`http://localhost:8080/code/list?code=${discountCode}`);
+            const discountData = response.data?.results;
+
+            if (!discountData) {
+                showMessageNotSuccess({ message: "Discount code not found." });
+                return;
+            }
+
+            if (discountData.status === "expired") {
+                showMessageNotSuccess({ message: "This discount code has expired." });
+                return;
+            }
+
+            const productInCart = cartItems.some(item => item.productId === discountData.productId);
+
+            if (!productInCart) {
+                showMessageNotSuccess({ message: "This discount code cannot be applied as the required product is not in the cart." });
+                return;
+            }
+
+            // ตั้งค่าผลลัพธ์ส่วนลด
+            setDiscount(discountData.value);
+
+            // คำนวณยอดรวมใหม่ทันทีหลังจากตั้งค่า discount
+            calculateTotal(cartItems);
+
+            showMessageAdjust(`Discount code ${discountCode} applied successfully! You received ${discountData.value} off.`, "success");
+        } catch (error) {
+            showMessageError(error);
+        }
+    };
+
+
+
     const handleCheckout = () => {
         const orderInput = {
             status: 0,
@@ -149,6 +201,18 @@ function Cart() {
                 <div className="cart-container container py-4">
                     <h4 className="cart-title mb-4">Order</h4>
 
+                    {/* ช่องกรอกโค้ดส่วนลด */}
+                    <div className="discount-code-container">
+                        <input
+                            type="text"
+                            value={discountCode}
+                            onChange={(e) => setDiscountCode(e.target.value)}
+                            placeholder="Enter Discount Code"
+                            className="discount-code-input"
+                        />
+                        <button onClick={handleApplyDiscount} className="discount-code-btn">Apply</button>
+                    </div>
+
                     {cartItems.length === 0 ? (
                         <p className="text-center text-muted">Your cart is empty.</p>
                     ) : (
@@ -177,21 +241,18 @@ function Cart() {
                                         ${item.productPrice * item.qty}
                                     </div>
                                     <div className="cart-item-actions">
-                                        {item.qty === 1 ? (
-                                            <i
-                                                className="bi bi-trash text-danger mx-2 cart-icon"
-                                                onClick={() => handleDelete(item.cartItemId, item.productName)}
-                                            ></i>
-                                        ) : (
-                                            <i
-                                                className="bi bi-dash-circle mx-2 cart-icon"
-                                                onClick={() => handleDecrease(item)}
-                                            ></i>
-                                        )}
+                                        {/* ไอคอนลบสินค้า */}
+                                        <i
+                                            className="bi bi-trash text-danger mx-2 cart-icon"
+                                            onClick={() => handleDelete(item.cartItemId, item.productName)}
+                                        ></i>
+                                        <i
+                                            className="bi bi-dash-circle mx-2 cart-icon"
+                                            onClick={() => handleDecrease(item)}
+                                        ></i>
                                         <span>{item.qty}</span>
                                         <i
-                                            className={`bi bi-plus-circle mx-2 cart-icon ${item.qty >= item.productStock ? "text-muted" : ""
-                                                }`}
+                                            className={`bi bi-plus-circle mx-2 cart-icon ${item.qty >= item.productStock ? "text-muted" : ""}`}
                                             onClick={() => handleIncrease(item)}
                                             style={{ cursor: item.qty >= item.productStock ? "not-allowed" : "pointer" }}
                                         ></i>
@@ -207,9 +268,19 @@ function Cart() {
                             <p className="cart-total mb-1">
                                 Subtotal <b>${subtotal.toLocaleString()}</b>
                             </p>
+
+                            {/* แสดงค่าจัดส่ง */}
                             <p className="cart-delivery text-danger">
-                                (+deliver fee {deliveryFee})
+                                (+delivery fee {deliveryFee})
                             </p>
+
+                            {/* ถ้ามีส่วนลดจะแสดง (-discount) */}
+                            {discount > 0 && (
+                                <p className="cart-discount text-danger">
+                                    (-discount ${discount.toLocaleString()})
+                                </p>
+                            )}
+
                             <h5 className="mt-2 fw-bold">
                                 Grand Total: ${grandTotal.toLocaleString()}
                             </h5>
@@ -217,6 +288,7 @@ function Cart() {
                                 Check out
                             </button>
                         </div>
+
                     )}
                 </div>
             </main>

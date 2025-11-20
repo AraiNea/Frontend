@@ -13707,3 +13707,48 @@ footer {
     color: #f7941d;
     border: 2px solid #f7941d;
 }
+
+/* ============================
+  Discount
+   ============================ */
+.discount-code-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.discount-code-input {
+    width: 70%;  /* กำหนดความกว้างของช่องกรอกโค้ด */
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+}
+
+.discount-code-input:focus {
+    border-color: #f7941d;  /* เปลี่ยนสีขอบเมื่อช่องกรอกโค้ดถูกเลือก */
+    outline: none;
+}
+
+.discount-code-btn {
+    width: 25%;  /* กำหนดความกว้างของปุ่ม */
+    padding: 10px;
+    background-color: #f7941d;  /* สีพื้นหลังปุ่ม */
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.discount-code-btn:hover {
+    background-color: #e67818;  /* เปลี่ยนสีเมื่อ hover */
+}
+
+.discount-code-btn:disabled {
+    background-color: #ddd;  /* ถ้าปุ่มถูกปิดใช้งาน (disabled) */
+    cursor: not-allowed;
+}
