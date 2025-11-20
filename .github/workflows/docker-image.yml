@@ -83,7 +83,7 @@ jobs:
         run: npm ci
   
       - name: Port-forward frontend service
-        run: kubectl port-forward svc/frontend 3000:80 -n arainea &
+        run: kubectl port-forward svc/frontend 30080:80 -n arainea &
         shell: bash
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
