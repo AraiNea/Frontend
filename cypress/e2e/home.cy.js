@@ -3,22 +3,7 @@ describe('template spec', () => {
     cy.visit('http://localhost:3000')
   })
 
-  it('click pizza', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('a.nav-link.active').click()
-    cy.get('img[alt="BaconHam Cheese"]').click()
-    cy.get('.form-select').select('5') 
-    cy.contains('button', 'Add to Cart').click()
-    
-
-
-    
-
-
-
-
-  })
-
+  
   it('category pizza', () => {
     cy.visit('http://localhost:3000')
     cy.contains('a', 'Category').click()
@@ -97,24 +82,6 @@ describe('template spec', () => {
     cy.contains('button.btn.btn-danger', 'Sign In').click();
   });
 
-  it('should check and click Cart', () => {
-    
-    // รอให้ Cart ปรากฏ
-    cy.contains('span', 'Cart', { timeout: 10000 }).should('be.visible');
-
-    // คลิกปุ่ม Cart แบบเจาะจงปุ่มแรก
-    cy.get('button.header-action-btn').first().click();
-
-    // ตรวจ badge จำนวนสินค้า
-    cy.get('button.header-action-btn')
-      .first()
-      .find('span.badge')
-      .should('be.visible')
-      ;
-    cy.contains('button', 'Check out').click();
-    cy.contains('button', 'Check out').click();
-    
-  });
   
   it('logout and rgister', () => {
     cy.contains('button.header-action-btn span', 'alice')
@@ -167,6 +134,92 @@ describe('template spec', () => {
 
 
   });
+
+  it('filter', () => {
+    cy.visit('http://localhost:3000')
+    cy.get('a.nav-link')
+      .contains('Search')         // ตรวจสอบข้อความ
+      .should('have.attr', 'href', '/search');
+    cy.get('body').then(($body) => {
+        console.log($body.html())
+    })
+    cy.get('#header a[href="/search"]').click();
+    cy.get('#root button.btn-light span').click();
+    cy.get('#root input[placeholder="Min"]').click();
+    cy.get('#root input[placeholder="Min"]').type('100');
+    cy.get('#root input[placeholder="Max"]').click();
+    cy.get('#root input[placeholder="Max"]').type('200');
+    cy.get('#root div.gap-3').click();
+    cy.get('#root button.text-white').click();
+    cy.get('#root button.btn-light span').click();
+    cy.get('#root input[placeholder="Min"]').click();
+    cy.get('#root input[placeholder="Min"]').clear();
+    cy.get('#root input[placeholder="Max"]').click();
+    cy.get('#root input[placeholder="Max"]').clear();
+    cy.get('#inStockCheck').check();
+    cy.get('#root button.text-white').click();
+    cy.get('#root button.btn-light span').click();
+    cy.get('#root button.border').click();
+    cy.get('#root input[placeholder="Min"]').click();
+    cy.get('#root input[placeholder="Min"]').type('200');
+    cy.get('#root label.d-block').click();
+    cy.get('#root input[placeholder="Max"]').click();
+    cy.get('#root input[placeholder="Max"]').type('300');
+    cy.get('#inStockCheck').check();
+    cy.get('#root button.text-white').click();
+    cy.get('#root img[alt="BBQ Smoked"]').click();
+    cy.get('#root select.form-select').select('3');
+    cy.get('#root button.w-100').click();
+    cy.get('button.form-Button-Swal').click();
+    cy.get('#header input[placeholder="Search for products..."]').click();
+    cy.get('#header input[placeholder="Search for products..."]').type('weter');
+    cy.get('#header form.desktop-search-form i.bi').click();
+    cy.get('#root button.btn-light').click();
+    cy.get('#root label.form-check-label').click();
+    cy.get('#inStockCheck').check();
+    cy.get('#root button.text-white').click();
+
+
+      
+
+
+    
+  })
+  it('click pizza', () => {
+    cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3000')
+    cy.get('#root img[alt="BBQ Smoked"]').click();
+    cy.get('#root button.w-100').click();
+    cy.get('button.form-Button-Swal').click();
+    cy.get('#root button.d-flex').click();
+
+
+    
+
+
+
+
+  })
+
+  // it('should check and click Cart', () => {
+    
+  //   // รอให้ Cart ปรากฏ
+  //   cy.contains('span', 'Cart', { timeout: 10000 }).should('be.visible');
+
+  //   // คลิกปุ่ม Cart แบบเจาะจงปุ่มแรก
+  //   cy.get('button.header-action-btn').first().click();
+
+  //   // ตรวจ badge จำนวนสินค้า
+  //   cy.get('button.header-action-btn')
+  //     .first()
+  //     .find('span.badge')
+  //     .should('be.visible')
+  //     ;
+  //   cy.contains('button', 'Check out').click();
+  //   cy.contains('button', 'Check out').click();
+    
+  // });
+  
 
   
   
