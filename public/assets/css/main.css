@@ -13354,46 +13354,6 @@ footer {
     color: #555;
 }
 
-.trackorder-right {
-    width: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    cursor: pointer;
-}
-
-.trackorder-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.trackorder-status::before {
-    content: "●";
-    font-size: 0.7rem;
-}
-
-.trackorder-status.fulfilled::before {
-    color: #00b300;
-}
-
-.trackorder-status.pending::before {
-    color: #f7c948;
-}
-
-.trackorder-arrow {
-    font-size: 1.5rem;
-    color: #d33;
-    transition: transform 0.2s;
-}
-
-.trackorder-arrow:hover {
-    transform: translateX(3px);
-}
-
 /* ============================
   Order Detail Styles
    ============================ */
@@ -13692,4 +13652,58 @@ footer {
 .status-dropdown:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ffb34740;
+}
+
+/* ============================
+  Reorder
+   ============================ */
+.trackorder-status {
+    display: flex;
+    align-items: center;  /* ทำให้สถานะและลูกศรอยู่ในแนวเดียวกัน */
+    gap: 6px;
+    font-weight: 500;
+    text-transform: capitalize;
+    /* ลบส่วนนี้ออกเพื่อไม่ให้มีจุด ● */
+    /* ::before {
+        content: "●";
+        font-size: 0.7rem;
+    } */
+}
+
+.trackorder-status.fulfilled {
+    color: #00b300;
+}
+
+.trackorder-status.pending {
+    color: #f7c948;
+}
+
+.trackorder-arrow {
+    font-size: 1.5rem;
+    color: #d33;
+    transition: transform 0.2s;
+}
+
+.trackorder-arrow:hover {
+    transform: translateX(3px);
+}
+
+.trackorder-reorder {
+    background-color: #f7941d; /* สีส้ม */
+    color: white;
+    font-weight: bold;
+    border: 2px solid #f7941d; /* ขอบปุ่มเป็นสีส้ม */
+    border-radius: 5px;
+    padding: 6px 15px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px; /* เพิ่มระยะห่างจากสถานะ */
+}
+
+.trackorder-reorder:hover {
+    background-color: white;
+    color: #f7941d;
+    border: 2px solid #f7941d;
 }

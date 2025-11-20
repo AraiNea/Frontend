@@ -143,6 +143,22 @@ const useMessage = () => {
             },
         });
     };
+    const showMessageConfirmReorder = async (text) => {
+        const result = await Swal.fire({
+            text: text,
+            icon: "question",
+            showCancelButton: true,
+            showConfirmButton: true,
+            buttonsStyling: false,
+            confirmButtonText: "Confirm",
+            cancelButtonText: "Cancel",
+            customClass: {
+                confirmButton: "btn form-Button-Swal-Delete me-3",
+                cancelButton: "btn form-Button-Swal-Delete me-3",
+            },
+        });
+        return result;
+    };
 
     return {
         showMessageAdjust,
@@ -155,6 +171,7 @@ const useMessage = () => {
         showMessageConfirmProcess,
         showMessageSuccess,
         showMessageNotSuccess,
+        showMessageConfirmReorder
     };
 };
 

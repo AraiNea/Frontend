@@ -10,7 +10,7 @@ axios.defaults.headers.common["Accept"] = "application/json";
 
 function TrackOrder() {
     const navigate = useNavigate();
-    const { showMessageError } = useMessage();
+    const { showMessageError, showMessageAdjust, showMessageConfirmReorder } = useMessage();
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -37,6 +37,34 @@ function TrackOrder() {
 
     const renderStatusText = (status) => {
         return status === 1 ? "fulfilled" : "pending";
+    };
+
+    const handleReorder = async (order, orderItems) => {
+        try {
+            const result = await showMessageConfirmReorder(
+                'all items in your cart before reordering this order will be removed. Do you want to proceed?'
+            );
+
+            if (!result.isConfirmed) return;
+
+            const payload = orderItems.map((item) => ({
+                orderItemId: item.orderItemId,
+                productIdSnapshot: item.productIdSnapshot,
+                productName: item.productName,
+                productDetail: item.productDetail,
+                productPrice: item.productPrice,
+                qty: item.qty,
+                lineTotal: item.lineTotal,
+            }));
+
+            await axios.post("http://localhost:8080/order/reorder", { orderItems: payload });
+
+            showMessageAdjust("Reorder success", "success");
+
+            navigate("/cart");
+        } catch (e) {
+            showMessageError(e);
+        }
     };
 
     return (
@@ -71,20 +99,31 @@ function TrackOrder() {
                             </div>
 
                             <div className="trackorder-right">
-                                <span
-                                    className={`trackorder-status ${order.status === 1
-                                            ? "fulfilled"
-                                            : "pending"
+                                <div className="trackorder-status">
+                                    <span
+                                        className={`trackorder-status ${
+                                            order.status === 1 ? "fulfilled" : "pending"
                                         }`}
+                                    >
+                                        {renderStatusText(order.status)}
+                                    </span>
+
+                                    <span
+                                        className="trackorder-arrow"
+                                        onClick={() => handleOrderClick(order.orderId)}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        <i className="bi bi-arrow-right-circle"></i>
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="trackorder-reorder"
+                                    onClick={() => handleReorder(order, orderItems)}
                                 >
-                                    {renderStatusText(order.status)}
-                                </span>
-                                <span
-                                    className="trackorder-arrow"
-                                    onClick={() => handleOrderClick(order.orderId)}
-                                >
-                                    →
-                                </span>
+                                    Reorder
+                                </button>
                             </div>
                         </div>
                     ))
