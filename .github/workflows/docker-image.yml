@@ -81,38 +81,15 @@ jobs:
       - name: Load kubeconfig
         run: |
           mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          echo "${{ secrets.KUBECONFIG }}" | sed 's/\\n/\n/g' > ~/.kube/config
           chmod 600 ~/.kube/config
   
-      # ✔ ตรวจสอบว่ามี service frontend จริงไหม
+      - name: Debug kubeconfig
+        run: |
+          kubectl config view
+          kubectl get nodes
+  
       - name: Debug Services
         run: |
           echo "===== Services in arainea ====="
           kubectl get svc -n arainea -o wide
-  
-      # ✔ port-forward svc/frontend:80 → localhost:30080
-      - name: Port-forward frontend (K8s → localhost:30080)
-        run: |
-          echo "Starting port-forward..."
-          nohup kubectl port-forward svc/frontend 30080:80 -n arainea > pf.log 2>&1 &
-          sleep 8
-          echo "Testing port-forward:"
-          curl -v http://localhost:30080 || echo "Frontend not available"
-  
-      # ✔ Cypress จะยิงไป localhost:30080
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          wait-on: "http://localhost:30080"
-          wait-on-timeout: 180
-          browser: chrome
-        env:
-          CYPRESS_BASE_URL: http://localhost:30080
-          CYPRESS_API_URL: http://arainea-backend.arainea.svc.cluster.local:8080
-  
-      # ✔ Debug port-forward log ถ้า Cypress fail
-      - name: Show port-forward logs if failed
-        if: failure()
-        run: |
-          echo "===== PORT FORWARD LOG ====="
-          cat pf.log || echo "No pf.log found"
