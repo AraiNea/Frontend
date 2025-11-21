@@ -216,7 +216,7 @@ function ProductsManage() {
                 productName: form.productName,
                 productPrice: form.productPrice,
                 productDetail: form.productDetail,
-                productStock: form.productStock,    
+                productStock: parseInt(form.productStock, 10),  // Ensure this is treated as an integer
                 categoryId: form.categoryId,
                 createdBy: username || "system",
                 updatedBy: username || "system",
@@ -242,7 +242,6 @@ function ProductsManage() {
                 withCredentials: true,
                 headers: { "Content-Type": "multipart/form-data" },
             });
-
 
             if (res.data?.message?.includes("success")) {
                 showMessageSuccess(
