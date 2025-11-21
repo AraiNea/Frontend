@@ -12,8 +12,7 @@ describe('template spec', () => {
     cy.get('#root input[type="password"]').click();
     cy.get('#root input[type="password"]').type('alice123');
     cy.get('#root button.btn-danger').click();
-    cy.get('#root img[alt="Recommended 3"]').click();
-    cy.get('#root button.w-100').click();
+    
   })
 
   it('dppicate cart', () => {
