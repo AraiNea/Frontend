@@ -16,32 +16,43 @@ function WeeklyStockReport() {
     const [selectedDates, setSelectedDates] = useState([null, null]);
     const [searchQuery, setSearchQuery] = useState('');  // Search query state
 
-    useEffect(() => {
-        const fetchStockData = async () => {
-            try {
-                const res = await axios.get('http://localhost:8080/stock/list');
-                const totalRemaining = res.data.TotalInventory?.remaining || 0;
-                const outOfStock = res.data.TotalInventory?.stockOut || 0;
-
-                setStockData({
-                    totalRemaining,
-                    outOfStock,
-                });
-
-                // Set stock table data
-                setStockTable(res.data.StockTable || []);
-                setFilteredStockTable(res.data.StockTable || []);  // Initialize filtered table
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
+    // Fetch stock data with optional date filter
+    const fetchStockData = async (startDate, endDate) => {
+        try {
+            // Construct the query params for date range filtering
+            const params = {};
+            if (startDate && endDate) {
+                params.startTime = startDate.format('YYYY-MM-DD');
+                params.endTime = endDate.format('YYYY-MM-DD');
             }
-        };
 
-        fetchStockData();
-    }, []);
+            const res = await axios.get('http://localhost:8080/stock/list', { params });
+            const totalRemaining = res.data.TotalInventory?.remaining || 0;
+            const outOfStock = res.data.TotalInventory?.stockOut || 0;
+
+            setStockData({
+                totalRemaining,
+                outOfStock,
+            });
+
+            // Set stock table data
+            setStockTable(res.data.StockTable || []);
+            setFilteredStockTable(res.data.StockTable || []);  // Initialize filtered table
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStockData(); // Fetch data on component mount
+    }, []); // Empty dependency array means this runs only once when component mounts
 
     // Handle date change
     const handleDateChange = (dates) => {
         setSelectedDates(dates);
+        if (dates[0] && dates[1]) {
+            fetchStockData(dates[0], dates[1]); // Fetch stock data based on selected date range
+        }
     };
 
     // Handle search query change
@@ -118,6 +129,7 @@ function WeeklyStockReport() {
                                     <th>Category</th>
                                     <th>Price</th>
                                     <th>Stock</th>
+                                    <th>Sold</th>  {/* Added Sold column */}
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -129,14 +141,15 @@ function WeeklyStockReport() {
                                         <td>{product.categoryName}</td>
                                         <td>${product.price}</td>
                                         <td>{product.stock}</td>
+                                        <td>{product.sold}</td>  {/* Display sold amount */}
                                         <td>
-                                            {getStockStatus(product.stock, product.sold) === 'Out of Stock' && (
+                                            {getStockStatus(product.stock) === 'Out of Stock' && (
                                                 <span className="stock-status-pill out-of-stock">Out of Stock</span>
                                             )}
-                                            {getStockStatus(product.stock, product.sold) === 'Low Stock' && (
+                                            {getStockStatus(product.stock) === 'Low Stock' && (
                                                 <span className="stock-status-pill low-stock">Low Stock</span>
                                             )}
-                                            {getStockStatus(product.stock, product.sold) === 'In Stock' && (
+                                            {getStockStatus(product.stock) === 'In Stock' && (
                                                 <span className="stock-status-pill in-stock">In Stock</span>
                                             )}
                                         </td>
