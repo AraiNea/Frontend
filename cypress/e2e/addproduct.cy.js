@@ -12,6 +12,9 @@ describe('template spec', () => {
     cy.get('#root input[type="password"]').click({ force: true });
     cy.get('#root input[type="password"]').type('alice123', { force: true });
     cy.get('#root button.btn-danger').click({ force: true });
+    cy.get('#root img[alt="BaconHam Cheese"]').click({ force: true });
+    cy.get('#root button.w-100').click({ force: true });
+    cy.get('button.form-Button-Swal').click({ force: true });
   })
 
   it('dppicate cart', () => {
@@ -23,8 +26,10 @@ describe('template spec', () => {
     cy.get('#root input[type="password"]').click({ force: true });
     cy.get('#root input[type="password"]').type('alice123', { force: true });
     cy.get('#root button.btn-danger').click({ force: true });
-    cy.get('#root img[alt="Recommended 3"]').click({ force: true });
+    cy.get('#root img[alt="BaconHam Cheese"]').click({ force: true });
     cy.get('#root button.w-100').click({ force: true });
+    cy.get('button.form-Button-Swal').click({ force: true });
+    
   })
 
   it('modify cart', () => {
@@ -36,12 +41,9 @@ describe('template spec', () => {
     cy.get('#root input[type="password"]').click({ force: true });
     cy.get('#root input[type="password"]').type('alice123', { force: true });
     cy.get('#root button.btn-danger').click({ force: true });
-    cy.get('#root section:nth-child(3) div:nth-child(3) div.card div.card-body h5.mb-1').click({ force: true });
-    cy.get('#header button.position-relative').click({ force: true });
-    cy.get('#root div:nth-child(3) i.bi-plus-circle').click({ force: true });
-    cy.get('#root div:nth-child(4) i.bi-dash-circle').click({ force: true });
-    cy.get('#root div:nth-child(5) i.bi-plus-circle').click({ force: true });
-    cy.get('#root button.cart-checkout-btn').click({ force: true })
+    cy.get('#header button.position-relative span.d-none').click();
+    cy.get('#root i.bi-plus-circle').click({ force: true });
+    cy.get('#root button.cart-checkout-btn').click({ force: true });
         
   })
 
@@ -54,6 +56,6 @@ describe('template spec', () => {
     cy.get('#root input[type="password"]').click({ force: true });
     cy.get('#root input[type="password"]').type('alice123', { force: true });
     cy.get('#root button.btn-danger').click({ force: true });
-    cy.get('#root section:nth-child(3) div:nth-child(3) div.card div.card-body h5.mb-1').click({ force: true });
+    cy.get('#root img[alt="Water"]').click();
   })
 })
