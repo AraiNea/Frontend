@@ -129,7 +129,7 @@ function WeeklyStockReport() {
                                     <th>Category</th>
                                     <th>Price</th>
                                     <th>Stock</th>
-                                    <th>Sold</th>  {/* Added Sold column */}
+                                    <th>Sold</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -141,17 +141,13 @@ function WeeklyStockReport() {
                                         <td>{product.categoryName}</td>
                                         <td>${product.price}</td>
                                         <td>{product.stock}</td>
-                                        <td>{product.sold}</td>  {/* Display sold amount */}
+                                        <td>{product.sold}</td>
                                         <td>
-                                            {getStockStatus(product.stock) === 'Out of Stock' && (
-                                                <span className="stock-status-pill out-of-stock">Out of Stock</span>
-                                            )}
-                                            {getStockStatus(product.stock) === 'Low Stock' && (
-                                                <span className="stock-status-pill low-stock">Low Stock</span>
-                                            )}
-                                            {getStockStatus(product.stock) === 'In Stock' && (
-                                                <span className="stock-status-pill in-stock">In Stock</span>
-                                            )}
+                                            <span className={`stock-status-pill ${getStockStatus(product.stock) === 'Out of Stock' ? 'out-of-stock' :
+                                                    getStockStatus(product.stock) === 'Low Stock' ? 'low-stock' : 'in-stock'
+                                                }`}>
+                                                {getStockStatus(product.stock)}
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}
