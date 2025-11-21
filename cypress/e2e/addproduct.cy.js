@@ -1,69 +1,53 @@
 describe('template spec', () => {
+  const username = 'alice';
+  const password = 'alice123';
+
+  beforeEach(() => {
+    // รอ API products ก่อนทุก test
+    cy.intercept('GET', '/api/products').as('getProducts');
+    cy.visit('http://localhost:3000');
+  });
+
+  const login = () => {
+    cy.get('#header span.d-none', { timeout: 10000 }).click();
+    cy.get('#header button.dropdown-item').click();
+    cy.get('#root input[placeholder="Value"][type="text"]').click();
+    cy.contains('label', 'Username').next('input.form-control').type(username);
+    cy.get('#root input[type="password"]').click();
+    cy.get('#root input[type="password"]').type(password);
+    cy.get('#root button.btn-danger').click();
+    // รอ login redirect / homepage load
+    cy.wait('@getProducts');
+  };
+
   it('passes', () => {
-    cy.visit('http://localhost:3000')
-  })
+    // test visit only
+    cy.wait('@getProducts');
+  });
 
   it('cart', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('#header span.d-none').click({ force: true });
-    cy.get('#header button.dropdown-item').click({ force: true });
-    cy.get('#root input[placeholder="Value"][type="text"]').click({ force: true });
-    cy.contains('label', 'Username').next('input.form-control').type('alice', { force: true });
-    cy.get('#root input[type="password"]').click({ force: true });
-    cy.get('#root input[type="password"]').type('alice123', { force: true });
-    cy.get('#root button.btn-danger').click({ force: true });
-    // *** ปรับการรอเป็น 3 วินาที (3000ms) ***
-    cy.wait(3000); 
-    cy.get('#root img[alt="BaconHam Cheese"]').click({ force: true });
-    cy.get('#root button.w-100').click({ force: true });
-    cy.get('button.form-Button-Swal').click({ force: true });
-  })
+    login();
+    cy.get('#root img[alt="BaconHam Cheese"]', { timeout: 10000 }).should('be.visible').click();
+    cy.get('#root button.w-100', { timeout: 10000 }).click();
+    cy.get('button.form-Button-Swal', { timeout: 10000 }).click();
+  });
 
-  it('dppicate cart', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('#header span.d-none').click({ force: true });
-    cy.get('#header button.dropdown-item').click({ force: true });
-    cy.get('#root input[placeholder="Value"][type="text"]').click({ force: true });
-    cy.contains('label', 'Username').next('input.form-control').type('alice', { force: true });
-    cy.get('#root input[type="password"]').click({ force: true });
-    cy.get('#root input[type="password"]').type('alice123', { force: true });
-    cy.get('#root button.btn-danger').click({ force: true });
-    // *** ปรับการรอเป็น 3 วินาที (3000ms) ***
-    cy.wait(3000);
-    cy.get('#root img[alt="BaconHam Cheese"]').click({ force: true });
-    cy.get('#root button.w-100').click({ force: true });
-    cy.get('button.form-Button-Swal').click({ force: true });
-    
-  })
+  it('duplicate cart', () => {
+    login();
+    cy.get('#root img[alt="BaconHam Cheese"]', { timeout: 10000 }).should('be.visible').click();
+    cy.get('#root button.w-100', { timeout: 10000 }).click();
+    cy.get('button.form-Button-Swal', { timeout: 10000 }).click();
+  });
 
   it('modify cart', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('#header span.d-none').click({ force: true });
-    cy.get('#header button.dropdown-item').click({ force: true });
-    cy.get('#root input[placeholder="Value"][type="text"]').click({ force: true });
-    cy.contains('label', 'Username').next('input.form-control').type('alice', { force: true });
-    cy.get('#root input[type="password"]').click({ force: true });
-    cy.get('#root input[type="password"]').type('alice123', { force: true });
-    cy.get('#root button.btn-danger').click({ force: true });
-    // *** ปรับการรอเป็น 3 วินาที (3000ms) ***
-    cy.wait(3000);
-    cy.get('#header button.position-relative span.d-none').click();
-    cy.get('#root i.bi-plus-circle').click({ force: true });
-    cy.get('#root button.cart-checkout-btn').click({ force: true });
-        
-  })
+    login();
+    cy.get('#header button.position-relative span.d-none', { timeout: 10000 }).click();
+    cy.get('#root i.bi-plus-circle', { timeout: 10000 }).click();
+    cy.get('#root button.cart-checkout-btn', { timeout: 10000 }).click();
+  });
 
   it('water soldout', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('#header span.d-none').click({ force: true });
-    cy.get('#header button.dropdown-item').click({ force: true });
-    cy.get('#root input[placeholder="Value"][type="text"]').click({ force: true });
-    cy.contains('label', 'Username').next('input.form-control').type('alice', { force: true });
-    cy.get('#root input[type="password"]').click({ force: true });
-    cy.get('#root input[type="password"]').type('alice123', { force: true });
-    cy.get('#root button.btn-danger').click({ force: true });
-    // *** ปรับการรอเป็น 3 วินาที (3000ms) ***
-    cy.wait(3000);
-    cy.get('#root img[alt="Water"]').click();
-  })
-})
+    login();
+    cy.get('#root img[alt="Water"]', { timeout: 10000 }).should('be.visible').click();
+  });
+});
