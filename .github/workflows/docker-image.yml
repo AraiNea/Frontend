@@ -71,25 +71,35 @@ jobs:
   cypress:
     needs: deploy
     runs-on: ubuntu-latest
+  
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
   
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
   
-      # Port-forward frontend service ไป 30080
-      - name: Port-forward frontend service
-        run: kubectl port-forward svc/frontend 30080:3000 -n arainea &
-        shell: bash
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      - name: Load kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
   
-      # Cypress จะรอเองด้วย wait-on
+      # ✔ ตรวจสอบว่ามี service frontend จริงไหม
+      - name: Debug Services
+        run: |
+          echo "===== Services in arainea ====="
+          kubectl get svc -n arainea -o wide
+  
+      # ✔ port-forward svc/frontend:80 → localhost:30080
+      - name: Port-forward frontend (K8s → localhost:30080)
+        run: |
+          echo "Starting port-forward..."
+          nohup kubectl port-forward svc/frontend 30080:80 -n arainea > pf.log 2>&1 &
+          sleep 8
+          echo "Testing port-forward:"
+          curl -v http://localhost:30080 || echo "Frontend not available"
+  
+      # ✔ Cypress จะยิงไป localhost:30080
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -97,4 +107,12 @@ jobs:
           wait-on-timeout: 180
           browser: chrome
         env:
-          VITE_API_URL: http://localhost:30080  # ใช้พอร์ต 30080 ที่ Kubernetes
+          CYPRESS_BASE_URL: http://localhost:30080
+          CYPRESS_API_URL: http://arainea-backend.arainea.svc.cluster.local:8080
+  
+      # ✔ Debug port-forward log ถ้า Cypress fail
+      - name: Show port-forward logs if failed
+        if: failure()
+        run: |
+          echo "===== PORT FORWARD LOG ====="
+          cat pf.log || echo "No pf.log found"
