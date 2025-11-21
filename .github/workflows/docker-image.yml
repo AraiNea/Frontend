@@ -69,27 +69,42 @@ jobs:
           kubectl apply -f deployment/k8s/
           
   cypress:
-    needs: deploy
+    needs: build
     runs-on: ubuntu-latest
   
     steps:
       - uses: actions/checkout@v4
   
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-  
-      - name: Load kubeconfig
+      # 🟩 1) Build frontend docker image (ใช้ไฟล์ Dockerfile ของ frontend)
+      - name: Build frontend Docker image
         run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" | sed 's/\\n/\n/g' > ~/.kube/config
-          chmod 600 ~/.kube/config
+          docker build . -t frontend-test:latest
   
-      - name: Debug kubeconfig
+      # 🟩 2) Run frontend container on port 3000
+      - name: Run frontend container
         run: |
-          kubectl config view
-          kubectl get nodes
+          docker run -d --name frontend -p 3000:3000 frontend-test:latest
   
-      - name: Debug Services
+      # 🟩 3) Wait until frontend is up
+      - name: Wait for frontend
         run: |
-          echo "===== Services in arainea ====="
-          kubectl get svc -n arainea -o wide
+          for i in {1..30}; do
+            if curl -s http://localhost:3000 > /dev/null; then
+              echo "Frontend is ready!"
+              exit 0
+            fi
+            echo "Waiting for frontend..."
+            sleep 2
+          done
+          echo "Frontend failed to start"
+          exit 1
+  
+      # 🟩 4) Run Cypress against local frontend on port 3000
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
