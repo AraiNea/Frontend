@@ -126,6 +126,7 @@ function ProductsManage() {
             productPrice: item.productPrice,
             productDetail: item.productDetail,
             productStock: item.productStock,
+            oldProductStock: item.productStock,
             categoryId: item.categoryId,
             categoryName: item.categoryName,
             preview: item.productImgPath
@@ -209,8 +210,15 @@ function ProductsManage() {
             "Are you sure to save this product?"
         );
         if (!confirm.isConfirmed) return;
+
         try {
-            console.log("Saving product with username:", username);
+            const stockType = form.productStock > form.oldProductStock
+                ? 1  // Stock increased
+                : form.productStock < form.oldProductStock
+                    ? 3  // Stock decreased
+                    : 2;  // Stock remained unchanged
+                console.log("Stock Type:", stockType);
+
             const productData = {
                 productId: form.productId || null,
                 productName: form.productName,
@@ -218,6 +226,7 @@ function ProductsManage() {
                 productDetail: form.productDetail,
                 productStock: parseInt(form.productStock, 10),  // Ensure this is treated as an integer
                 categoryId: form.categoryId,
+                stockType: stockType,  // Pass the stockType
                 createdBy: username || "system",
                 updatedBy: username || "system",
             };
@@ -258,6 +267,7 @@ function ProductsManage() {
             showMessageError(e);
         }
     };
+
 
     // ✅ Filter Search
     const filteredProducts = products.filter((p) =>
