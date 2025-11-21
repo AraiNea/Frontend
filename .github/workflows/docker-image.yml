@@ -71,25 +71,33 @@ jobs:
   cypress:
     needs: deploy
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-  
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Write kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-  
+
       - name: Install dependencies
         run: npm ci
-  
-      # Port-forward frontend service ไป 30080
+
+      # Port-forward frontend service → localhost:30080
       - name: Port-forward frontend service
-        run: kubectl port-forward svc/frontend 30080:80 -n arainea &
-        shell: bash
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
-  
-      # Cypress จะรอเองด้วย wait-on
+        run: |
+          nohup kubectl port-forward svc/frontend 30080:80 -n arainea > pf.log 2>&1 &
+          sleep 3
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -97,4 +105,5 @@ jobs:
           wait-on-timeout: 180
           browser: chrome
         env:
-          VITE_API_URL: http://localhost:8080
+          CYPRESS_BASE_URL: http://localhost:30080
+          CYPRESS_API_URL: http://arainea-backend.arainea.svc.cluster.local:8080
