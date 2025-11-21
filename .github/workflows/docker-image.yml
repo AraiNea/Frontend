@@ -69,29 +69,44 @@ jobs:
           kubectl apply -f deployment/k8s/
           
   cypress:
-    needs: build # ยังคงต้องพึ่งพา build เพื่อให้แน่ใจว่า backend image ถูกสร้างแล้ว
+    needs: build
     runs-on: ubuntu-latest
-    
-    # 🚨 ลบ services ออกทั้งหมด เพราะจะใช้ Docker Compose แทน
-    
+  
     steps:
       - uses: actions/checkout@v4
-      
-      # 🌟 NEW: ติดตั้ง Docker Compose 🌟
-      - name: Install Docker Compose
-        run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
-
-      # 🌟 NEW: รัน Services ด้วย Docker Compose 🌟
-      - name: Start services using Docker Compose
-        # ใช้ -d เพื่อรันใน background และรอจนกว่า service จะ health (ใช้เวลาสักพัก)
-        run: docker-compose -f docker-compose.test.yml up -d --build --wait
-
+  
+      # 1️⃣ Build frontend Docker image
+      - name: Build frontend Docker image
+        run: |
+          docker build . -t frontend-test:latest
+  
+      # 2️⃣ Run frontend container on port 3000
+      - name: Run frontend container
+        run: |
+          docker run -d --name frontend -p 3000:3000 frontend-test:latest
+  
+      # 3️⃣ Wait until frontend is up
+      - name: Wait for frontend
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:3000 > /dev/null; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Waiting for frontend..."
+            sleep 2
+          done
+          if ! curl -s http://localhost:3000 > /dev/null; then
+            echo "Frontend failed to start"
+            exit 1
+          fi
+  
       # 4️⃣ Run Cypress tests
-      # Cypress จะสามารถเข้าถึง http://localhost:3000 ได้ และ frontend จะคุยกับ backend:8080 ได้
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          # ไม่ต้องรอด้วย wait-on แล้ว เพราะ compose ได้รอ healthcheck ให้แล้ว
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
           browser: chrome
         env:
           CYPRESS_BASE_URL: http://localhost:3000
