@@ -75,31 +75,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
   
-      # 🟩 1) Build frontend docker image (ใช้ไฟล์ Dockerfile ของ frontend)
+      # 1️⃣ Build frontend Docker image
       - name: Build frontend Docker image
         run: |
           docker build . -t frontend-test:latest
   
-      # 🟩 2) Run frontend container on port 3000
+      # 2️⃣ Run frontend container on port 3000
       - name: Run frontend container
         run: |
           docker run -d --name frontend -p 3000:3000 frontend-test:latest
   
-      # 🟩 3) Wait until frontend is up
+      # 3️⃣ Wait until frontend is up
       - name: Wait for frontend
         run: |
           for i in {1..30}; do
             if curl -s http://localhost:3000 > /dev/null; then
               echo "Frontend is ready!"
-              exit 0
+              break
             fi
             echo "Waiting for frontend..."
             sleep 2
           done
-          echo "Frontend failed to start"
-          exit 1
+          if ! curl -s http://localhost:3000 > /dev/null; then
+            echo "Frontend failed to start"
+            exit 1
+          fi
   
-      # 🟩 4) Run Cypress against local frontend on port 3000
+      # 4️⃣ Run Cypress tests
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
